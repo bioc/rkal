@@ -9,7 +9,7 @@
 get_quant_meta <- function(srp_meta, data_dir) {
 
 
-  fastq_files <- list.files(data_dir, '.fastq.gz$')
+  fastq_files <- list.files(data_dir, paste0(srp_meta$run, '.fastq.gz$', collapse = '|'))
   srr_names <- gsub('.fastq.gz$', '', fastq_files)
   srr_names <- gsub('_[12]$', '', srr_names)
 
