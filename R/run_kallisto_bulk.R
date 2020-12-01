@@ -5,12 +5,12 @@
 #' @inheritParams get_kallisto_index
 #' @param indices_dir Directory with kallisto indices. See \code{\link{build_kallisto_index}}.
 #' @param data_dir Directory with raw fastq.gz RNA-Seq files.
-#' @param paired Boolean indicating if fastq files are paired. If \code{NULL} (default), fastqs are considered paired if they are non \code{NA}
-#'   entries in \code{quant_meta$Pair}.
 #' @param quant_meta Previous result of \code{\link{get_quant_meta}} (for fastqs downloaded by `GEOfastq`) or
 #'   \code{\link{select_pairs}} (for non-public fastqs). Must contain column \code{'File Name'} and optionally
 #'   \code{'Pair'} (rows with same value taken as paired), and \code{Replicate} (rows with same valued taken as replicates). \code{quant_meta} is used to bypass
 #'   call to \code{select_pairs} GUI.
+#' @param paired Boolean indicating if fastq files are paired. If \code{NULL} (default), fastqs are considered paired if they are non \code{NA}
+#'   entries in \code{quant_meta$Pair}.
 #' @param species Species name. Default is \code{homo_sapiens}.
 #' Used to determine transcriptome index to use.
 #' @param fl.mean Estimated average fragment length (only relevant for single-end reads). Default (\code{NULL}) uses 200.
@@ -21,7 +21,7 @@
 #' @export
 #'
 #'
-run_kallisto_bulk <- function(indices_dir, data_dir, paired = NULL, quant_meta = NULL, species = 'homo_sapiens', release = '94', fl.mean = NULL, fl.sd = NULL, updateProgress = NULL) {
+run_kallisto_bulk <- function(indices_dir, data_dir, quant_meta = NULL, paired = NULL, species = 'homo_sapiens', release = '94', fl.mean = NULL, fl.sd = NULL, updateProgress = NULL) {
 
   data_dir <- path.expand(data_dir)
 

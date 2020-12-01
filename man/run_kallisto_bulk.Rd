@@ -7,8 +7,8 @@
 run_kallisto_bulk(
   indices_dir,
   data_dir,
-  paired = NULL,
   quant_meta = NULL,
+  paired = NULL,
   species = "homo_sapiens",
   release = "94",
   fl.mean = NULL,
@@ -21,13 +21,13 @@ run_kallisto_bulk(
 
 \item{data_dir}{Directory with raw fastq.gz RNA-Seq files.}
 
-\item{paired}{Boolean indicating if fastq files are paired. If \code{NULL} (default), fastqs are considered paired if they are non \code{NA}
-entries in \code{quant_meta$Pair}.}
-
 \item{quant_meta}{Previous result of \code{\link{get_quant_meta}} (for fastqs downloaded by `GEOfastq`) or
 \code{\link{select_pairs}} (for non-public fastqs). Must contain column \code{'File Name'} and optionally
 \code{'Pair'} (rows with same value taken as paired), and \code{Replicate} (rows with same valued taken as replicates). \code{quant_meta} is used to bypass
 call to \code{select_pairs} GUI.}
+
+\item{paired}{Boolean indicating if fastq files are paired. If \code{NULL} (default), fastqs are considered paired if they are non \code{NA}
+entries in \code{quant_meta$Pair}.}
 
 \item{species}{Species name. Default is \code{homo_sapiens}.
 Used to determine transcriptome index to use.}
