@@ -3,6 +3,7 @@
 export(build_ensdb)
 export(build_kallisto_index)
 export(construct_eset)
+export(filter_genes)
 export(get_ensdb_package)
 export(get_quant_meta)
 export(get_tx2gene)
