@@ -9,7 +9,6 @@
 #' @param load_saved If TRUE (default) and a saved \code{ExpressionSet} exists, will load from disk.
 #' @param save_eset If TRUE (default) and either \code{load_saved} is \code{FALSE} or a saved \code{ExpressionSet} does not exist,
 #'   then an ExpressionSet will be saved to disk. Will overwrite if already exists.
-#' @param save_dgel If TRUE, will save the \code{DGEList} object. Used for testing purposes. Default is \code{FALSE}.
 #'
 #' @return \code{\link[Biobase]{ExpressionSet}} with attributes/accessors:
 #' \itemize{
@@ -26,12 +25,7 @@
 #'
 #' @export
 #'
-#' @examples
-#'
-#' data_dir <- 'data-raw/patient_data/sjia/bulk/mono'
-#' eset <- load_seq(data_dir, load_saved = FALSE)
-#'
-load_seq <- function(data_dir, type = 'kallisto', species = 'Homo sapiens', release = '94', load_saved = TRUE, save_eset = TRUE, save_dgel = FALSE) {
+load_seq <- function(data_dir, type = 'kallisto', species = 'Homo sapiens', release = '94', load_saved = TRUE, save_eset = TRUE) {
 
   # check if already have
   eset_path  <- file.path(data_dir, 'eset.rds')
@@ -45,12 +39,6 @@ load_seq <- function(data_dir, type = 'kallisto', species = 'Homo sapiens', rele
   annot <- get_ensdb_package(species, release)
   fdata <- setup_fdata(species, release)
   eset <- construct_eset(q$quants, fdata, annot, q$txi.deseq)
-
-  if (save_dgel) {
-    # used for testing purposes
-    dgel_path <- gsub('eset', 'dgel', eset_path)
-    saveRDS(q$quants, dgel_path)
-  }
 
   # save eset and return
   if (save_eset) saveRDS(eset, eset_path)
