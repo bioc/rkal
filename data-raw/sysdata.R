@@ -4,5 +4,4 @@ homologene <- readRDS('data-raw/homologene/homologene.rds')
 hs <- readRDS('data-raw/homologene/hs.rds')
 
 
-usethis::use_data(tx2gene, tx2gene_mouse, homologene, internal = TRUE, overwrite = TRUE)
-usethis::use_data(hs, internal = FALSE, overwrite = TRUE)
+usethis::use_data(hs, tx2gene, tx2gene_mouse, homologene, internal = TRUE, overwrite = TRUE)
