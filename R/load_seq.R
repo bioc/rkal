@@ -3,7 +3,6 @@
 #' Load bulk RNA-Seq data into an ExpressionSet.
 #'
 #' @param data_dir Directory with raw and quantified RNA-Seq files.
-#' @param type Either \code{'salmon'} or \code{'kallisto'}. The package used for quantification. Must be on the PATH.
 #' @param species Character vector indicating species. Genus and species should be space seperated, not underscore. Default is \code{Homo sapiens}.
 #' @param release EnsemblDB release. Should be same as used in \code{\link[drugseqr.data]{build_kallisto_index}}.
 #' @param load_saved If TRUE (default) and a saved \code{ExpressionSet} exists, will load from disk.
@@ -16,7 +15,9 @@
 #'   \item \code{annotation} Character vector of annotation package used.
 #'   \item \code{exprs} Length scaled counts generated from abundances for use in
 #'     \code{\link[limma]{voom}} (see \code{vignette("tximport", package = "tximport")}).
-#'   \item \code{phenoData} from \code{pdata_path} annotation file with added columns:
+#'   \item \code{abundance, counts, length} accessed e.g. by \code{assayDataElement(eset, 'length')}.
+#'   Imported for exploratory data analysis with DESeq2 variance stabilization transforms.
+#'   \item \code{phenoData} added columns:
 #'     \itemize{
 #'       \item \code{lib.size} library size from \code{\link[edgeR]{calcNormFactors}}.
 #'       \item \code{norm.factors} library normalization factors from \code{\link[edgeR]{calcNormFactors}}.
@@ -24,8 +25,9 @@
 #' }
 #'
 #' @export
+#' @seealso \link{get_vsd}
 #'
-load_seq <- function(data_dir, type = 'kallisto', species = 'Homo sapiens', release = '94', load_saved = TRUE, save_eset = TRUE) {
+load_seq <- function(data_dir, species = 'Homo sapiens', release = '94', load_saved = TRUE, save_eset = TRUE) {
 
   # check if already have
   eset_path  <- file.path(data_dir, 'eset.rds')
@@ -33,7 +35,7 @@ load_seq <- function(data_dir, type = 'kallisto', species = 'Homo sapiens', rele
     return(readRDS(eset_path))
 
   # import quants and filter low counts
-  q <- import_quants(data_dir, type = type, species = species, release = release)
+  q <- import_quants(data_dir, species = species, release = release)
 
   # construct eset
   annot <- get_ensdb_package(species, release)
@@ -44,6 +46,33 @@ load_seq <- function(data_dir, type = 'kallisto', species = 'Homo sapiens', rele
   if (save_eset) saveRDS(eset, eset_path)
   return(eset)
 }
+
+#' Get variance stabilized data for exploratory data analysis
+#'
+#' @param eset ExpressionSet loaded with \link{load_seq}.
+#'   Requires group column in \code{pData(eset)} specifying sample groupings.
+#' @param rlog_cutoff Sample number above which will use \code{\link[DESeq2]{vst}}.
+#'   instead of \code{\link[DESeq2]{rlog}}. Default is 50.
+#'
+#' @return \code{DESeqTransform} with variance stabilized expression data.
+#' @export
+get_vsd <- function(eset, rlog_cutoff = 50) {
+
+  trans_fun <- ifelse(ncol(eset) > rlog_cutoff, DESeq2::vst, DESeq2::rlog)
+  pdata <- Biobase::pData(eset)
+  txi.deseq <- list(countsFromAbundance = 'no',
+                    abundance = Biobase::assayDataElement(eset, 'abundance'),
+                    counts = Biobase::assayDataElement(eset, 'counts'),
+                    length = Biobase::assayDataElement(eset, 'length')
+  )
+
+  dds <- DESeq2::DESeqDataSetFromTximport(txi.deseq, pdata, design = ~group)
+  dds <- DESeq2::estimateSizeFactors(dds)
+  vsd <- trans_fun(dds, blind = FALSE)
+
+  return(vsd)
+}
+
 
 #' Construct expression set
 #'
@@ -172,13 +201,12 @@ setup_fdata <- function(species = 'Homo sapiens', release = '94') {
 #'
 #' @inheritParams setup_fdata
 #' @inheritParams load_seq
-#' @param return_deseq if \code{TRUE}, returns tximport result for DESeq2 workflow.
 #'
 #' @return \code{DGEList} with length scaled counts.
 #' @keywords internal
 #' @export
 #'
-import_quants <- function(data_dir, type, species = 'Homo sapiens', release = '94', return_deseq = FALSE) {
+import_quants <- function(data_dir, species = 'Homo sapiens', release = '94') {
 
   if (!grepl('sapiens', species)) {
     tx2gene <- get_tx2gene(species, release, columns = c("tx_id", "gene_name", "entrezid"))
@@ -190,32 +218,25 @@ import_quants <- function(data_dir, type, species = 'Homo sapiens', release = '9
 
   # import quants using tximport
   # using limma::voom for differential expression (see tximport vignette)
-  pkg_version <- get_pkg_version(type)
-  qdir <- paste(type, pkg_version, 'quants', sep = '_')
+  pkg_version <- get_pkg_version('kallisto')
+  qdir <- paste('kallisto', pkg_version, 'quants', sep = '_')
   qdirs <- list.files(file.path(data_dir, qdir))
-
-  if (type == 'kallisto') {
-    quants_paths <- file.path(data_dir, qdir, qdirs, 'abundance.h5')
-  } else if (type == 'salmon') {
-    quants_paths <- file.path(data_dir, qdir, qdirs, 'quant.sf')
-  }
 
   # use folders as names (used as sample names)
   names(quants_paths) <- qdirs
 
   # import limma for differential expression analysis
-  txi.limma <- tximport::tximport(quants_paths, tx2gene = tx2gene, type = type,
+  txi.limma <- tximport::tximport(quants_paths, tx2gene = tx2gene, type = 'kallisto',
                                   ignoreTxVersion = ignore, countsFromAbundance = 'lengthScaledTPM')
 
   quants <- edgeR::DGEList(txi.limma$counts)
   quants <- edgeR::calcNormFactors(quants)
 
   # import DESeq2 for exploratory analysis (plots)
-  txi.deseq <- tximport::tximport(quants_paths, tx2gene = tx2gene, type = type,
+  txi.deseq <- tximport::tximport(quants_paths, tx2gene = tx2gene, type = 'kallisto',
                                   ignoreTxVersion = ignore, countsFromAbundance = 'no')
 
 
-  if(return_deseq) return(txi.deseq)
   return(list(quants = quants, txi.deseq = txi.deseq))
 }
 

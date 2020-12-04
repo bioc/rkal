@@ -6,7 +6,6 @@
 \usage{
 load_seq(
   data_dir,
-  type = "kallisto",
   species = "Homo sapiens",
   release = "94",
   load_saved = TRUE,
@@ -15,8 +14,6 @@ load_seq(
 }
 \arguments{
 \item{data_dir}{Directory with raw and quantified RNA-Seq files.}
-
-\item{type}{Either \code{'salmon'} or \code{'kallisto'}. The package used for quantification. Must be on the PATH.}
 
 \item{species}{Character vector indicating species. Genus and species should be space seperated, not underscore. Default is \code{Homo sapiens}.}
 
@@ -34,7 +31,9 @@ then an ExpressionSet will be saved to disk. Will overwrite if already exists.}
   \item \code{annotation} Character vector of annotation package used.
   \item \code{exprs} Length scaled counts generated from abundances for use in
     \code{\link[limma]{voom}} (see \code{vignette("tximport", package = "tximport")}).
-  \item \code{phenoData} from \code{pdata_path} annotation file with added columns:
+  \item \code{abundance, counts, length} accessed e.g. by \code{assayDataElement(eset, 'length')}.
+  Imported for exploratory data analysis with DESeq2 variance stabilization transforms.
+  \item \code{phenoData} added columns:
     \itemize{
       \item \code{lib.size} library size from \code{\link[edgeR]{calcNormFactors}}.
       \item \code{norm.factors} library normalization factors from \code{\link[edgeR]{calcNormFactors}}.
@@ -43,4 +42,7 @@ then an ExpressionSet will be saved to disk. Will overwrite if already exists.}
 }
 \description{
 Load bulk RNA-Seq data into an ExpressionSet.
+}
+\seealso{
+\link{get_vsd}
 }
