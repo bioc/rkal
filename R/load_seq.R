@@ -221,6 +221,7 @@ import_quants <- function(data_dir, species = 'Homo sapiens', release = '94') {
   pkg_version <- get_pkg_version('kallisto')
   qdir <- paste('kallisto', pkg_version, 'quants', sep = '_')
   qdirs <- list.files(file.path(data_dir, qdir))
+  quants_paths <- file.path(data_dir, qdir, qdirs, 'abundance.h5')
 
   # use folders as names (used as sample names)
   names(quants_paths) <- qdirs
