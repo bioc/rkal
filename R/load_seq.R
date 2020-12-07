@@ -143,7 +143,6 @@ construct_eset <- function(quants, fdata, annot, txi.deseq = NULL) {
 #' @export
 #'
 setup_fdata <- function(species = 'Homo sapiens', release = '94') {
-  data(hs, package='GEOkallisto', envir = environment())
   is.hs <- grepl('sapiens', species)
   if (species == 'Mus musculus') tx2gene <- tx2gene_mouse
 
