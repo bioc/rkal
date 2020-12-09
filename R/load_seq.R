@@ -47,6 +47,54 @@ load_seq <- function(data_dir, species = 'Homo sapiens', release = '94', load_sa
   return(eset)
 }
 
+#' Load ExpressionSet from ARCHS4 h5 file
+#'
+#' @param archs4_file Path to human_matrix.h5 file.
+#' @param gsm_names Character vector of GSM names of samples to load.
+#' @param eset_path Path to load saved eset from or to save eset to.
+#' @param load_saved Should a previously saved eset be loaded? Requires \code{eset_path} to be specified.
+#' @inheritParams load_seq
+#'
+#'
+#' @return ExpressionSet
+#' @export
+#'
+#' @examples
+#' archs4_file <- '~/human_matrix_v9.h5'
+#' gsm_names <- c("GSM3190508", "GSM3190509", "GSM3190510", "GSM3190511")
+#' eset <- load_archs4_seq(archs4_file, gsm_names)
+#'
+load_archs4_seq <- function(archs4_file, gsm_names, species = 'Homo sapiens', release = '94', load_saved = TRUE, eset_path = NULL) {
+
+  saved_eset <- !is.null(eset_path) && file.exists(eset_path)
+  if (saved_eset & load_saved) return(readRDS(eset_path))
+
+  samples <- as.character(rhdf5::h5read(archs4_file, "meta/samples/geo_accession"))
+  genes <- as.character(rhdf5::h5read(archs4_file, "meta/genes/genes"))
+
+  # use ARCHS4
+  sample_locations <- which(gsm_names %in% gsm_names)
+  if (length(sample_locations) < length(gsm_names))
+    warning('Only', length(sample_locations), 'of', length(gsm_names), 'GSMs present.')
+
+  # extract gene expression from compressed data
+  counts <- t(rhdf5::h5read(archs4_file, "data/expression", index=list(sample_locations, 1:length(genes))))
+  rhdf5::H5close()
+
+  counts[counts<0] <- 0
+  rownames(counts) <- genes
+  colnames(counts) <- samples[sample_locations]
+
+  quants <- edgeR::calcNormFactors(edgeR::DGEList(counts))
+  fdata <- setup_fdata(species, release)
+  annot <- get_ensdb_package(species, release)
+  eset <- construct_eset(quants, fdata, annot)
+
+  if (!is.null(eset_path)) saveRDS(eset, eset_path)
+  return(eset)
+
+}
+
 #' Get variance stabilized data for exploratory data analysis
 #'
 #' @param eset ExpressionSet loaded with \link{load_seq}.
@@ -58,15 +106,23 @@ load_seq <- function(data_dir, species = 'Homo sapiens', release = '94', load_sa
 #' @export
 get_vsd <- function(eset, rlog_cutoff = 50) {
 
-  trans_fun <- ifelse(ncol(eset) > rlog_cutoff, DESeq2::vst, DESeq2::rlog)
+  trans_fun <- if(ncol(eset) > rlog_cutoff) DESeq2::vst else DESeq2::rlog
+  els <- Biobase::assayDataElementNames(eset)
   pdata <- Biobase::pData(eset)
-  txi.deseq <- list(countsFromAbundance = 'no',
-                    abundance = Biobase::assayDataElement(eset, 'abundance'),
-                    counts = Biobase::assayDataElement(eset, 'counts'),
-                    length = Biobase::assayDataElement(eset, 'length')
-  )
 
-  dds <- DESeq2::DESeqDataSetFromTximport(txi.deseq, pdata, design = ~group)
+  if (all(c('abundance', 'counts', 'length') %in% els)) {
+    txi.deseq <- list(countsFromAbundance = 'no',
+                      abundance = Biobase::assayDataElement(eset, 'abundance'),
+                      counts = Biobase::assayDataElement(eset, 'counts'),
+                      length = Biobase::assayDataElement(eset, 'length')
+    )
+
+    dds <- DESeq2::DESeqDataSetFromTximport(txi.deseq, pdata, design = ~group)
+
+  } else {
+    # this is e.g. for eset from load_archs4_seq
+    dds <- DESeq2::DESeqDataSetFromMatrix(Biobase::exprs(eset), pdata, design = ~group)
+  }
   dds <- DESeq2::estimateSizeFactors(dds)
   vsd <- trans_fun(dds, blind = FALSE)
 
@@ -187,8 +243,12 @@ setup_fdata <- function(species = 'Homo sapiens', release = '94') {
 
     fdata <- unique(fdata)
 
-    # keep duplicate gene_name -> SYMBOL and gene only if non NA
-    discard <- fdata[, .I[any(!is.na(SYMBOL)) & is.na(SYMBOL)], by=gene_name]$V1
+    # keep duplicate SYMBOL and ENTREZID only if non-NA
+    discard <- fdata[,
+                     .I[(any(!is.na(SYMBOL)) & is.na(SYMBOL)) |
+                          (any(!is.na(ENTREZID)) & is.na(ENTREZID))],
+                     by=gene_name]$V1
+
     if (length(discard)) fdata <- fdata[-discard]
   }
 

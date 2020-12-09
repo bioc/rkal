@@ -7,8 +7,10 @@
 #' @keywords internal
 #'
 filter_genes <- function(eset) {
-  counts <- Biobase::assayDataElement(eset, 'counts')
-  if (is.null(counts)) return(eset)
+  els <- Biobase::assayDataElementNames(eset)
+  els <- ifelse('counts' %in% els, 'counts', 'exprs')
+  counts <- Biobase::assayDataElement(eset, els)
+
   keep <- edgeR::filterByExpr(counts, group = eset$group)
   eset <- eset[keep, ]
   if (!nrow(eset)) stop("No genes with reads after filtering")

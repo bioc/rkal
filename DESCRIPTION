@@ -1,7 +1,7 @@
 Package: GEOkallisto
 Type: Package
 Title: Runs, Imports, and Exports, 'kallisto' Quantification
-Version: 0.1.7
+Version: 0.1.8
 Author: Alex Pickering
 Maintainer: Alex Pickering <alexvpickering@gmail.com>
 Description: More about what it does (maybe more than one line)
@@ -25,6 +25,7 @@ Imports:
     shinyjs,
     shiny,
     DT,
-    data.table
+    data.table,
+    rhdf5
 Depends: 
     R (>= 2.10)
