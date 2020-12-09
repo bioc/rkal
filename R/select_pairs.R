@@ -8,7 +8,6 @@
 #' @return data.frame with character column \code{'File Name'} and integer columns \code{'Pair'} (if pair-ended) and \code{'Replicate'} (if added).
 #' @export
 #'
-#' @examples
 #'
 select_pairs <- function(data_dir) {
 
@@ -94,7 +93,7 @@ select_pairs <- function(data_dir) {
     output$pdata <- DT::renderDataTable({
 
       DT::datatable(
-        isolate(pdata_r()),
+        shiny::isolate(pdata_r()),
         class = 'cell-border dt-fake-height',
         rownames = FALSE,
         escape = FALSE, # to allow HTML in table

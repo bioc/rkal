@@ -1,7 +1,7 @@
 Package: rkal
 Type: Package
 Title: Run, Import, and Export 'kallisto' Quantifications
-Version: 0.1.9
+Version: 0.1.11
 Author: Alex Pickering
 Maintainer: Alex Pickering <alexvpickering@gmail.com>
 Description: Interface to 'kallisto' pseudo quantification utility. 'rkal' 
@@ -16,18 +16,20 @@ SystemRequirements: kallisto
 License: MIT + file LICENSE
 Imports:
     Biobase,
-    limma,
     tximport,
     edgeR,
     ensembldb,
     AnnotationHub,
+    AnnotationDbi,
     curl,
     utils,
     tibble,
     miniUI,
+    rlang,
     shinyjs,
     shiny,
     DT,
+    DESeq2,
     data.table,
     rhdf5
 biocViews:
@@ -37,4 +39,4 @@ biocViews:
     Preprocessing,
     Transcriptomics
 Depends: 
-    R (>= 4.0.2)
+    R (>= 4.0)

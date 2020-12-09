@@ -11,12 +11,18 @@ construct_eset(quants, fdata, annot, txi.deseq = NULL)
 
 \item{fdata}{\code{data.table} returned from \code{\link{setup_fdata}}.}
 
-\item{annot}{Character vector with ensembldb package name. e.g. \code{'EnsDb.Hsapiens.v94'}. Returned from \code{\link{get_ensdb_package}}.}
+\item{annot}{Character vector with ensembldb package name. e.g.
+\code{'EnsDb.Hsapiens.v94'}. Returned from \code{\link{get_ensdb_package}}.}
+
+\item{txi.deseq}{Optional \code{DGElist} returned by \code{import_quants}. If
+specified, assays 'counts', 'abundance', and 'length' will be present in
+the returned \code{ExpressionSet}.}
 }
 \value{
-\code{ExpressionSet} with input arguments are in corresponding atributes.
+\code{ExpressionSet} with \code{quants$counts} stored in the 'exprs'
+ assay, \code{quants$samples} stored in the sample metadata, and \code{fdata}
+ stored in the feature data.
 }
 \description{
 Construct expression set
 }
-\keyword{internal}

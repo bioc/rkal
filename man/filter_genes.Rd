@@ -15,4 +15,3 @@ filtered \code{eset}
 \description{
 Filter genes in RNA-seq ExpressionSet
 }
-\keyword{internal}

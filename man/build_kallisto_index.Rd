@@ -18,8 +18,8 @@ needs to match with \code{\link{build_ensdb}}).}
 This index is used for RNA seq quantification.
 }
 \examples{
-# build kallist index for humans
+# build kallisto index for humans
 indices_dir <- '~/kallisto'
-build_kallisto_index(indices_dir)
+\dontrun{build_kallisto_index(indices_dir)}
 
 }

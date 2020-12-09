@@ -16,6 +16,3 @@ data.frame with character column \code{'File Name'} and integer columns \code{'P
 Used to select a pairs for paired-end experiments and replicate samples. Please follow prompt, ensuring correct file name matching and
 end-type experiment identification.
 }
-\examples{
-
-}

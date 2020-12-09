@@ -7,9 +7,9 @@
 get_ensdb_package(species, release)
 }
 \arguments{
-\item{species}{Character vector indicating species. Genus and species should be space seperated, not underscore. Default is \code{Homo sapiens}.}
+\item{species}{Character vector indicating species. Genus and species should be space separated, not underscore. Default is \code{Homo sapiens}.}
 
-\item{release}{EnsemblDB release. Should be same as used in \code{\link[drugseqr.data]{build_kallisto_index}}.}
+\item{release}{EnsemblDB release. Should be same as used in \code{\link{build_kallisto_index}}.}
 }
 \value{
 Character vector with ensembldb package name. e.g. \code{'EnsDb.Hsapiens.v94'}.
@@ -17,4 +17,3 @@ Character vector with ensembldb package name. e.g. \code{'EnsDb.Hsapiens.v94'}.
 \description{
 Get ensembldb package name
 }
-\keyword{internal}

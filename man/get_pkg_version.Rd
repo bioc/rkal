@@ -15,4 +15,8 @@ Version of salmon/kallisto.
 \description{
 Get version of salmon/kallisto from system command.
 }
-\keyword{internal}
+\examples{
+
+get_pkg_version('kallisto')
+
+}

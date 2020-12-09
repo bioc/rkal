@@ -4,7 +4,6 @@
 #'
 #' @return filtered \code{eset}
 #' @export
-#' @keywords internal
 #'
 filter_genes <- function(eset) {
   els <- Biobase::assayDataElementNames(eset)

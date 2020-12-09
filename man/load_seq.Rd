@@ -15,9 +15,9 @@ load_seq(
 \arguments{
 \item{data_dir}{Directory with raw and quantified RNA-Seq files.}
 
-\item{species}{Character vector indicating species. Genus and species should be space seperated, not underscore. Default is \code{Homo sapiens}.}
+\item{species}{Character vector indicating species. Genus and species should be space separated, not underscore. Default is \code{Homo sapiens}.}
 
-\item{release}{EnsemblDB release. Should be same as used in \code{\link[drugseqr.data]{build_kallisto_index}}.}
+\item{release}{EnsemblDB release. Should be same as used in \code{\link{build_kallisto_index}}.}
 
 \item{load_saved}{If TRUE (default) and a saved \code{ExpressionSet} exists, will load from disk.}
 
@@ -25,7 +25,7 @@ load_seq(
 then an ExpressionSet will be saved to disk. Will overwrite if already exists.}
 }
 \value{
-\code{\link[Biobase]{ExpressionSet}} with attributes/accessors:
+\code{ExpressionSet} with attributes/accessors:
 \itemize{
   \item \code{sampleNames} from names of raw RNA-Seq files (excluding .fastq.gz suffix).
   \item \code{annotation} Character vector of annotation package used.

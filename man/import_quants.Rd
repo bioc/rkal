@@ -9,12 +9,18 @@ import_quants(data_dir, species = "Homo sapiens", release = "94")
 \arguments{
 \item{data_dir}{Directory with raw and quantified RNA-Seq files.}
 
-\item{species}{Character vector indicating species. Genus and species should be space seperated, not underscore. Default is \code{Homo sapiens}.}
+\item{species}{The species. Default is \code{homo_sapiens}.}
 
-\item{release}{EnsemblDB release. Should be same as used in \code{\link[drugseqr.data]{build_kallisto_index}}.}
+\item{release}{ensembl release. Default is \code{94} (latest in release for AnnotationHub -
+needs to match with \code{\link{build_ensdb}}).}
 }
 \value{
-\code{DGEList} with length scaled counts.
+list with items \itemize{
+  \item{quants}{\code{DGEList} from \code{tximport} with argument
+    \code{countsFromAbundance = 'lengthScaledTPM'}}
+  \item{txi.deseq}{\code{DGEList}from \code{tximport} with argument
+    \code{countsFromAbundance = 'no'}}
+}
 }
 \description{
 Import kallisto quants

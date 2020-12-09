@@ -3,13 +3,13 @@
 #' Load bulk RNA-Seq data into an ExpressionSet.
 #'
 #' @param data_dir Directory with raw and quantified RNA-Seq files.
-#' @param species Character vector indicating species. Genus and species should be space seperated, not underscore. Default is \code{Homo sapiens}.
-#' @param release EnsemblDB release. Should be same as used in \code{\link[drugseqr.data]{build_kallisto_index}}.
+#' @param species Character vector indicating species. Genus and species should be space separated, not underscore. Default is \code{Homo sapiens}.
+#' @param release EnsemblDB release. Should be same as used in \code{\link{build_kallisto_index}}.
 #' @param load_saved If TRUE (default) and a saved \code{ExpressionSet} exists, will load from disk.
 #' @param save_eset If TRUE (default) and either \code{load_saved} is \code{FALSE} or a saved \code{ExpressionSet} does not exist,
 #'   then an ExpressionSet will be saved to disk. Will overwrite if already exists.
 #'
-#' @return \code{\link[Biobase]{ExpressionSet}} with attributes/accessors:
+#' @return \code{ExpressionSet} with attributes/accessors:
 #' \itemize{
 #'   \item \code{sampleNames} from names of raw RNA-Seq files (excluding .fastq.gz suffix).
 #'   \item \code{annotation} Character vector of annotation package used.
@@ -62,9 +62,9 @@ load_seq <- function(data_dir, species = 'Homo sapiens', release = '94', load_sa
 #' @export
 #'
 #' @examples
-#' archs4_file <- '~/human_matrix_v9.h5'
+#' archs4_file <- '/path/to/human_matrix_v*.h5'
 #' gsm_names <- c("GSM3190508", "GSM3190509", "GSM3190510", "GSM3190511")
-#' eset <- load_archs4_seq(archs4_file, gsm_names)
+#' \dontrun{eset <- load_archs4_seq(archs4_file, gsm_names)}
 #'
 load_archs4_seq <- function(archs4_file, gsm_names, species = 'Homo sapiens', release = '94', load_saved = TRUE, eset_path = NULL) {
 
@@ -136,10 +136,15 @@ get_vsd <- function(eset, rlog_cutoff = 50) {
 #'
 #' @param quants \code{DGEList} with RNA-seq counts.
 #' @param fdata \code{data.table} returned from \code{\link{setup_fdata}}.
-#' @param annot Character vector with ensembldb package name. e.g. \code{'EnsDb.Hsapiens.v94'}. Returned from \code{\link{get_ensdb_package}}.
+#' @param annot Character vector with ensembldb package name. e.g.
+#'   \code{'EnsDb.Hsapiens.v94'}. Returned from \code{\link{get_ensdb_package}}.
+#' @param txi.deseq Optional \code{DGElist} returned by \code{import_quants}. If
+#'   specified, assays 'counts', 'abundance', and 'length' will be present in
+#'   the returned \code{ExpressionSet}.
 #'
-#' @return \code{ExpressionSet} with input arguments are in corresponding atributes.
-#' @keywords internal
+#' @return \code{ExpressionSet} with \code{quants$counts} stored in the 'exprs'
+#'  assay, \code{quants$samples} stored in the sample metadata, and \code{fdata}
+#'  stored in the feature data.
 #' @export
 #'
 construct_eset <- function(quants, fdata, annot, txi.deseq = NULL) {
@@ -197,10 +202,14 @@ construct_eset <- function(quants, fdata, annot, txi.deseq = NULL) {
 #'
 #' @return \code{data.table} with columns \code{SYMBOL} and \code{ENTREZID_HS} corresponding to
 #'   HGNC symbols and human entrez ids respectively.
-#' @keywords internal
+#' @importFrom rlang :=
+#' @inheritParams build_kallisto_index
 #' @export
 #'
 setup_fdata <- function(species = 'Homo sapiens', release = '94') {
+  # for R CMD check
+  entrezid <- tx_id <- SYMBOL_9606 <- SYMBOL <- ENTREZID <- gene_name <- .I <- NULL
+
   is.hs <- grepl('sapiens', species)
   if (species == 'Mus musculus') tx2gene <- tx2gene_mouse
 
@@ -263,7 +272,12 @@ setup_fdata <- function(species = 'Homo sapiens', release = '94') {
 #' @inheritParams setup_fdata
 #' @inheritParams load_seq
 #'
-#' @return \code{DGEList} with length scaled counts.
+#' @return list with items \itemize{
+#'   \item{quants}{\code{DGEList} from \code{tximport} with argument
+#'     \code{countsFromAbundance = 'lengthScaledTPM'}}
+#'   \item{txi.deseq}{\code{DGEList}from \code{tximport} with argument
+#'     \code{countsFromAbundance = 'no'}}
+#' }
 #' @keywords internal
 #' @export
 #'
@@ -278,7 +292,7 @@ import_quants <- function(data_dir, species = 'Homo sapiens', release = '94') {
   if (any(grepl('[.]', tx2gene$tx_id))) ignore <- FALSE
 
   # import quants using tximport
-  # using limma::voom for differential expression (see tximport vignette)
+  # using limma voom for differential expression (see tximport vignette)
   pkg_version <- get_pkg_version('kallisto')
   qdir <- paste('kallisto', pkg_version, 'quants', sep = '_')
   qdirs <- list.files(file.path(data_dir, qdir))
@@ -307,7 +321,6 @@ import_quants <- function(data_dir, species = 'Homo sapiens', release = '94') {
 #'
 #' @inheritParams load_seq
 #'
-#' @keywords internal
 #' @return Character vector with ensembldb package name. e.g. \code{'EnsDb.Hsapiens.v94'}.
 #' @export
 #'
@@ -330,7 +343,6 @@ get_ensdb_package <- function(species, release) {
 #' @keywords internal
 #'
 get_tx2gene <- function(species = 'Homo sapiens', release = '94', columns = c("tx_id", "gene_name", "entrezid", "gene_id", "seq_name", "description")) {
-  is.installed('ensembldb', level = 'error')
 
   # load EnsDb package
   ensdb_package <- get_ensdb_package(species, release)
@@ -367,12 +379,9 @@ get_tx2gene <- function(species = 'Homo sapiens', release = '94', columns = c("t
 #' @examples
 #'
 #' # build ensembldb annotation package for human
-#' build_ensdb()
+#' \dontrun{build_ensdb()}
 #'
 build_ensdb <- function(species = 'Homo sapiens', release = '94') {
-  # packages in suggests for faster install time
-  suggests <- c('ensembldb', 'AnnotationHub', 'AnnotationDbi')
-  is.installed(suggests, level = 'error')
 
   # store ensembl databases in built package
   ensdb_dir <- 'EnsDb'
@@ -398,7 +407,7 @@ build_ensdb <- function(species = 'Homo sapiens', release = '94') {
   # install new ensemble database
   ensdb_name <- list.files(ensdb_dir)
   ensdb_path <- file.path(ensdb_dir, ensdb_name)
-  install.packages(ensdb_path, repos = NULL)
+  utils::install.packages(ensdb_path, repos = NULL)
 
   # remove source files
   unlink(ensdb_dir, recursive = TRUE)

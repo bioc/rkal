@@ -18,9 +18,9 @@ load_archs4_seq(
 
 \item{gsm_names}{Character vector of GSM names of samples to load.}
 
-\item{species}{Character vector indicating species. Genus and species should be space seperated, not underscore. Default is \code{Homo sapiens}.}
+\item{species}{Character vector indicating species. Genus and species should be space separated, not underscore. Default is \code{Homo sapiens}.}
 
-\item{release}{EnsemblDB release. Should be same as used in \code{\link[drugseqr.data]{build_kallisto_index}}.}
+\item{release}{EnsemblDB release. Should be same as used in \code{\link{build_kallisto_index}}.}
 
 \item{load_saved}{Should a previously saved eset be loaded? Requires \code{eset_path} to be specified.}
 
@@ -30,11 +30,11 @@ load_archs4_seq(
 ExpressionSet
 }
 \description{
-Load ExpressionSet from ARCHS4 h5 file
+ARCHS4 h5 files are available at https://maayanlab.cloud/archs4/download.html
 }
 \examples{
-archs4_file <- '~/human_matrix_v9.h5'
+archs4_file <- '/path/to/human_matrix_v*.h5'
 gsm_names <- c("GSM3190508", "GSM3190509", "GSM3190510", "GSM3190511")
-eset <- load_archs4_seq(archs4_file, gsm_names)
+\dontrun{eset <- load_archs4_seq(archs4_file, gsm_names)}
 
 }

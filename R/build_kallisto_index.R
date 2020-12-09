@@ -11,9 +11,9 @@
 #' @export
 #'
 #' @examples
-#' # build kallist index for humans
+#' # build kallisto index for humans
 #' indices_dir <- '~/kallisto'
-#' build_kallisto_index(indices_dir)
+#' \dontrun{build_kallisto_index(indices_dir)}
 #'
 build_kallisto_index <- function(indices_dir, species = 'homo_sapiens', release = '94') {
 
@@ -59,9 +59,12 @@ build_kallisto_index <- function(indices_dir, species = 'homo_sapiens', release 
 #' @param type Either \code{'salmon'} or \code{'kallisto'}.
 #'
 #' @return Version of salmon/kallisto.
-#' @keywords internal
+#' @export
 #'
 #' @examples
+#'
+#' get_pkg_version('kallisto')
+#'
 get_pkg_version <- function(type) {
   # possibly use older salmon with version appended to executable name
   if (type == 'salmon') {

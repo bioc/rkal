@@ -11,9 +11,9 @@ get_tx2gene(
 )
 }
 \arguments{
-\item{species}{Character vector indicating species. Genus and species should be space seperated, not underscore. Default is \code{Homo sapiens}.}
+\item{species}{Character vector indicating species. Genus and species should be space separated, not underscore. Default is \code{Homo sapiens}.}
 
-\item{release}{EnsemblDB release. Should be same as used in \code{\link[drugseqr.data]{build_kallisto_index}}.}
+\item{release}{EnsemblDB release. Should be same as used in \code{\link{build_kallisto_index}}.}
 
 \item{columns}{Character vector of columns from ensdb package to return or \code{'list'} to print available options.}
 }
