@@ -5,10 +5,10 @@ Version: 0.1.8
 Author: Alex Pickering
 Maintainer: Alex Pickering <alexvpickering@gmail.com>
 Description: Interface to 'kallisto' pseudo quantification utility. 'rkal' 
-automates running, importing, and exporting  'kallisto' quantification. This
-includes importing samples from ARCHS4 HDF5 data objects. Though general, 'rkal'
-is primarly intended for use by other packages e.g. crossmeta for differential
-expression and meta analyses.
+    automates running, importing, and exporting  'kallisto' quantification. This
+    includes importing samples from ARCHS4 HDF5 data objects. Though general, 'rkal'
+    is primarly intended for use by other packages e.g. crossmeta for differential
+    expression and meta analyses.
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
