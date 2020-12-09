@@ -49,6 +49,8 @@ load_seq <- function(data_dir, species = 'Homo sapiens', release = '94', load_sa
 
 #' Load ExpressionSet from ARCHS4 h5 file
 #'
+#' ARCHS4 h5 files are available at https://maayanlab.cloud/archs4/download.html
+#'
 #' @param archs4_file Path to human_matrix.h5 file.
 #' @param gsm_names Character vector of GSM names of samples to load.
 #' @param eset_path Path to load saved eset from or to save eset to.

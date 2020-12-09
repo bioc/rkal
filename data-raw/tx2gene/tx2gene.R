@@ -1,5 +1,5 @@
 # get tx2gene
-library(GEOkallisto)
+library(rkal)
 library(tidyr)
 library(dplyr)
 library(tibble)
