@@ -1,0 +1,108 @@
+---
+title: "rkal"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{rkal}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(rkal)
+```
+
+
+# Installation
+
+`rkal` can be installed from Bioconductor as follows:
+
+```{r, eval = FALSE}
+if(!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("rkal")
+```
+
+# Overview of rkal
+
+`kallisto` is the fastest program for accurately quantifying transcript abundance from
+bulk RNA-seq data. `rkal` provides an R interface to `kallisto` functions `index` (for building
+a genome index) and `quant` (for running pseudoalignment). `rkal` automates 
+argument specification for fastq files downloaded with [GEOfastq](https://github.com/alexvpickering/GEOfastq)
+ and provides a convenient GUI for personal fastq files. After pseudoalignment,
+counts can be imported into R into a data structure that is compatible with
+[crossmeta](https://github.com/alexvpickering/crossmeta) (for differential
+expression and meta analyses) and [drugseqr](https://github.com/hms-dbmi/drugseqr) 
+(a GUI for bulk and single-cell exploratory analyses as well as connectivity mapping).
+Alternatively, counts can be imported for GEO samples pre-aligned as part of the
+[ARCHS4](https://maayanlab.cloud/archs4/download.html) project.
+
+# Getting Started using rkal
+
+Prior to pseudoalignment, an index of the transcriptome must first be built:
+
+
+```{r}
+# This will build the human Ensembl94 index for kallisto in the working directory
+# this only needs to be run once
+indices_dir <- getwd()
+build_kallisto_index(indices_dir = indices_dir, species = 'homo_sapiens', release = '94')
+```
+
+Next, we download an example fastq file with `GEOfastq`:
+
+```{r}
+library(GEOfastq)
+data_dir <- tempdir()
+
+# first get metadata needed and download example fastq file
+srp_meta <- crawl_gsms('GSM4875733')
+res <- get_fastqs(srp_meta, data_dir)
+```
+
+Next we collect fastq file metadata needed to run pseudoalignement (are fastq files paired or
+single-end? Are there any samples split across multiple files?):
+
+```{r}
+# we can get the necessary info automatically for fastqs from GEOfastq
+quant_meta <- get_quant_meta(srp_meta, data_dir)
+
+# for personal fastq files, we can use a GUI to specify this info
+# quant_meta <- select_pairs(data_dir)
+```
+
+
+We are now ready to run pseudoalignment:
+
+```{r}
+res <- run_kallisto_bulk(indices_dir, data_dir, quant_meta)
+```
+If you plan to use crossmeta or drugseqr, you can easily generate a suitably
+annotated ExpressionSet:
+
+```{r}
+eset <- load_seq(data_dir)
+
+# if you downloaded the ARCHS4 pre-aligned GEO data
+archs4_file <- '/path/to/human_matrix_v*.h5'
+# eset <- load_archs4_seq(archs4_file, 'GSM4875733')
+```
+Alternative, see e.g. the [tximport vignette](https://bioconductor.org/packages/release/bioc/vignettes/tximport/inst/doc/tximport.html)
+if you prefer to run limma or DESeq2 differential expression analyses.
+
+# Session info
+
+The following package and versions were used in the production of this vignette.
+
+```{r echo=FALSE}
+sessionInfo()
+```
+
+
+ 
