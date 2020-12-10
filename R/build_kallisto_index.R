@@ -12,7 +12,7 @@
 #'
 #' @examples
 #' # build kallisto index for humans
-#' indices_dir <- '~/kallisto'
+#' indices_dir <- getwd()
 #' \dontrun{build_kallisto_index(indices_dir)}
 #'
 build_kallisto_index <- function(indices_dir, species = 'homo_sapiens', release = '94') {
@@ -54,30 +54,19 @@ build_kallisto_index <- function(indices_dir, species = 'homo_sapiens', release 
   setwd(work_dir)
 }
 
-#' Get version of salmon/kallisto from system command.
+#' Get version of kallisto from system command.
 #'
-#' @param type Either \code{'salmon'} or \code{'kallisto'}.
-#'
-#' @return Version of salmon/kallisto.
+#' @return Version of kallisto.
 #' @export
 #'
 #' @examples
 #'
-#' get_pkg_version('kallisto')
+#' get_pkg_version()
 #'
-get_pkg_version <- function(type) {
-  # possibly use older salmon with version appended to executable name
-  if (type == 'salmon') {
-    version <- system(paste(type, '--version'), intern = TRUE)
-    version <- gsub('^salmon ', '', version)
+get_pkg_version <- function() {
 
-  } else if (type == 'kallisto') {
-    version <- system(paste(type, 'version'), intern = TRUE)
+    version <- system('kallisto version', intern = TRUE)
     version <- gsub('^kallisto, version ', '', version)
-
-  } else {
-    stop('type must be either salmon or kallisto')
-  }
 
   return(version)
 }

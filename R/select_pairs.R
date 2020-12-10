@@ -126,7 +126,7 @@ select_pairs <- function(data_dir) {
           pdata[rows, 'Pair'] <<- paste('<div style="background:', color, background, ';"></div>')
         }
       } else {
-        pdata[1:nrow(pdata), 'Pair'] <<- NA
+        pdata[seq_len(nrow(pdata)), 'Pair'] <<- NA
       }
 
       return(pdata)

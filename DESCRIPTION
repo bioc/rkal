@@ -1,7 +1,7 @@
 Package: rkal
 Type: Package
 Title: Run, Import, and Export 'kallisto' Quantifications
-Version: 0.1.11
+Version: 0.1.12
 Author: Alex Pickering
 Maintainer: Alex Pickering <alexvpickering@gmail.com>
 Description: Interface to 'kallisto' pseudo quantification utility. 'rkal' 
@@ -40,3 +40,7 @@ biocViews:
     Transcriptomics
 Depends: 
     R (>= 4.0)
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

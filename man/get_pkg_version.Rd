@@ -2,21 +2,18 @@
 % Please edit documentation in R/build_kallisto_index.R
 \name{get_pkg_version}
 \alias{get_pkg_version}
-\title{Get version of salmon/kallisto from system command.}
+\title{Get version of kallisto from system command.}
 \usage{
-get_pkg_version(type)
-}
-\arguments{
-\item{type}{Either \code{'salmon'} or \code{'kallisto'}.}
+get_pkg_version()
 }
 \value{
-Version of salmon/kallisto.
+Version of kallisto.
 }
 \description{
-Get version of salmon/kallisto from system command.
+Get version of kallisto from system command.
 }
 \examples{
 
-get_pkg_version('kallisto')
+get_pkg_version()
 
 }

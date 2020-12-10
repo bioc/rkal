@@ -80,7 +80,8 @@ load_archs4_seq <- function(archs4_file, gsm_names, species = 'Homo sapiens', re
     warning('Only', length(sample_locations), 'of', length(gsm_names), 'GSMs present.')
 
   # extract gene expression from compressed data
-  counts <- t(rhdf5::h5read(archs4_file, "data/expression", index=list(sample_locations, 1:length(genes))))
+  counts <- t(rhdf5::h5read(archs4_file, "data/expression",
+                            index=list(sample_locations, seq_along(genes))))
   rhdf5::H5close()
 
   counts[counts<0] <- 0
@@ -151,7 +152,7 @@ construct_eset <- function(quants, fdata, annot, txi.deseq = NULL) {
   # remove duplicate rows of counts
   rn <- row.names(quants$counts)
 
-  txi.deseq <- txi.deseq[1:3]
+  txi.deseq <- txi.deseq[seq_len(3)]
   for (name in names(txi.deseq))
     colnames(txi.deseq[[name]]) <-
     paste(colnames(txi.deseq[[name]]), name, sep = '_')
@@ -293,7 +294,7 @@ import_quants <- function(data_dir, species = 'Homo sapiens', release = '94') {
 
   # import quants using tximport
   # using limma voom for differential expression (see tximport vignette)
-  pkg_version <- get_pkg_version('kallisto')
+  pkg_version <- get_pkg_version()
   qdir <- paste('kallisto', pkg_version, 'quants', sep = '_')
   qdirs <- list.files(file.path(data_dir, qdir))
   quants_paths <- file.path(data_dir, qdir, qdirs, 'abundance.h5')

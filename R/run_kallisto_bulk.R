@@ -29,7 +29,7 @@ run_kallisto_bulk <- function(indices_dir, data_dir, quant_meta = NULL, paired =
   if (is.null(updateProgress)) updateProgress <- function(...) {NULL}
 
   # get index_path
-  kallisto_version <- get_pkg_version('kallisto')
+  kallisto_version <- get_pkg_version()
   index_path <- get_kallisto_index(indices_dir, species, release)
 
   if (is.null(quant_meta)) quant_meta <- select_pairs(data_dir)
@@ -124,7 +124,7 @@ run_kallisto_bulk <- function(indices_dir, data_dir, quant_meta = NULL, paired =
 #' @keywords internal
 #'
 get_kallisto_index <- function(indices_dir, species = 'homo_sapiens', release = '94') {
-  kallisto_version <- get_pkg_version('kallisto')
+  kallisto_version <- get_pkg_version()
   species <- gsub(' ', '_', tolower(species))
 
   index_path <- file.path(indices_dir, paste0('kallisto_', kallisto_version))
