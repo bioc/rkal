@@ -5,11 +5,22 @@
 #'
 #' @return data.frame needed for parameter \code{quant_meta} in \code{\link{run_kallisto_bulk}}
 #' @export
+#' @examples
+#'
+#' # example srp_meta
+#' srp_meta <- data.frame(run = 'SRR1',
+#'                       gsm_name = 'GSM4875733',
+#'                       library_layout = 'PAIRED')
+#'
+#' # example paired fastq files
+#' data_dir <- tempdir()
+#' file.create(file.path(data_dir, c('SRR1_1.fastq.gz', 'SRR1_2.fastq.gz')))
+#' quant_meta <- get_quant_meta(srp_meta, data_dir)
 #'
 get_quant_meta <- function(srp_meta, data_dir) {
 
 
-  fastq_files <- list.files(data_dir, paste0(srp_meta$run, '.fastq.gz$', collapse = '|'))
+  fastq_files <- list.files(data_dir, paste0(srp_meta$run, '.+?.fastq.gz$', collapse = '|'))
   srr_names <- gsub('.fastq.gz$', '', fastq_files)
   srr_names <- gsub('_[12]$', '', srr_names)
 

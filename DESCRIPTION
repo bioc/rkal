@@ -1,7 +1,7 @@
 Package: rkal
 Type: Package
 Title: Run, Import, and Export 'kallisto' Quantifications
-Version: 0.1.12
+Version: 0.1.13
 Author: Alex Pickering
 Maintainer: Alex Pickering <alexvpickering@gmail.com>
 Description: Interface to 'kallisto' pseudo quantification utility. 'rkal' 
@@ -42,5 +42,6 @@ Depends:
     R (>= 4.0)
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr

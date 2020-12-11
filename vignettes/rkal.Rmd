@@ -73,14 +73,15 @@ single-end? Are there any samples split across multiple files?):
 # we can get the necessary info automatically for fastqs from GEOfastq
 quant_meta <- get_quant_meta(srp_meta, data_dir)
 
-# for personal fastq files, we can use a GUI to specify this info
-# quant_meta <- select_pairs(data_dir)
+# for personal fastq files, a GUI will pop up to specify this info in the next step
+
 ```
 
 
 We are now ready to run pseudoalignment:
 
 ```{r}
+# exclude quant_meta for personal fastqs (will invoke GUI)
 res <- run_kallisto_bulk(indices_dir, data_dir, quant_meta)
 ```
 If you plan to use crossmeta or drugseqr, you can easily generate a suitably

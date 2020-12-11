@@ -19,6 +19,13 @@ value indicate samples that replicates.}
 \code{TRUE} if the replicate is valid, otherwise \code{FALSE}.
 }
 \description{
-Validate sample replicates for RNA seq
+Used internally by select_pairs and externally by drugseqr
 }
-\keyword{internal}
+\examples{
+# example if valid replicate specification
+pairs <- rep(NA, 4)
+rows <- c(1, 2)
+reps <- rep(NA, 4)
+validate_reps(pairs, rows, reps)
+
+}

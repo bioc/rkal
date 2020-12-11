@@ -6,7 +6,7 @@
 #' @param data_dir Directory with raw fastq.gz RNA-Seq files.
 #'
 #' @return data.frame with character column \code{'File Name'} and integer columns \code{'Pair'} (if pair-ended) and \code{'Replicate'} (if added).
-#' @export
+#' @keywords internal
 #'
 #'
 select_pairs <- function(data_dir) {

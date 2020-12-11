@@ -4,6 +4,12 @@
 #'
 #' @return boolean indicating if experiement is pair-ended (\code{TRUE}) or single-ended (\code{FALSE}).
 #' @export
+#'
+#' @examples
+#' fastq_paths <- system.file("testdata", 'SRR12960930.400.fastq.gz', package="rkal")
+#' fastq_id1s <- get_fastq_id1s(fastq_paths)
+#' detect_paired(fastq_id1s)
+#'
 detect_paired <- function(fastq_id1s) {
 
   # older illumina sequence identifiers have 1 part
@@ -53,6 +59,10 @@ detect_paired <- function(fastq_id1s) {
 #'   Names are the \code{fastq_paths}.
 #' @export
 #'
+#' @examples
+#' fastq_paths <- system.file("testdata", 'SRR12960930.400.fastq.gz', package="rkal")
+#' fastq_id1s <- get_fastq_id1s(fastq_paths)
+#'
 get_fastq_id1s <- function(fastq_paths) {
 
   # get first line with @ symbol (sequence identifier)
@@ -72,6 +82,8 @@ get_fastq_id1s <- function(fastq_paths) {
 
 #' Validate sample pairing for pair-ended RNA seq
 #'
+#' Used internally by \link{select_pairs} and externally by drugseqr
+#'
 #' @param pairs Numeric vector of integers and/or \code{NA}. Positions with the same integer
 #'   value indicate samples that are paired in a pair-ended experiment.
 #' @param rows Numeric vector of integers indicating selected rows.
@@ -80,6 +92,13 @@ get_fastq_id1s <- function(fastq_paths) {
 #'
 #' @return \code{TRUE} if the pairing is valid, otherwise \code{FALSE}.
 #' @export
+#'
+#' @examples
+#' # example if valid pairing
+#' pairs <- rep(NA, 4)
+#' rows <- c(1, 2)
+#' reps <- rep(NA, 4)
+#' validate_pairs(pairs, rows, reps)
 #'
 validate_pairs <- function(pairs, rows, reps) {
 
@@ -110,11 +129,20 @@ validate_pairs <- function(pairs, rows, reps) {
 
 #' Validate sample replicates for RNA seq
 #'
+#' Used internally by select_pairs and externally by drugseqr
+#'
 #' @inheritParams validate_pairs
 #'
 #' @return \code{TRUE} if the replicate is valid, otherwise \code{FALSE}.
 #' @export
-#' @keywords internal
+#'
+#' @examples
+#' # example if valid replicate specification
+#' pairs <- rep(NA, 4)
+#' rows <- c(1, 2)
+#' reps <- rep(NA, 4)
+#' validate_reps(pairs, rows, reps)
+#'
 validate_reps <- function(pairs, rows, reps) {
 
   if (length(rows) < 2) {

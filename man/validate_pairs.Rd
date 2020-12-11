@@ -19,5 +19,13 @@ value indicate samples that replicates.}
 \code{TRUE} if the pairing is valid, otherwise \code{FALSE}.
 }
 \description{
-Validate sample pairing for pair-ended RNA seq
+Used internally by \link{select_pairs} and externally by drugseqr
+}
+\examples{
+# example if valid pairing
+pairs <- rep(NA, 4)
+rows <- c(1, 2)
+reps <- rep(NA, 4)
+validate_pairs(pairs, rows, reps)
+
 }
