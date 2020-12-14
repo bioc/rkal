@@ -75,7 +75,7 @@ load_archs4_seq <- function(archs4_file, gsm_names, species = 'Homo sapiens', re
   genes <- as.character(rhdf5::h5read(archs4_file, "meta/genes/genes"))
 
   # use ARCHS4
-  sample_locations <- which(gsm_names %in% gsm_names)
+  sample_locations <- which(samples %in% gsm_names)
   if (length(sample_locations) < length(gsm_names))
     warning('Only', length(sample_locations), 'of', length(gsm_names), 'GSMs present.')
 
