@@ -77,7 +77,7 @@ load_archs4_seq <- function(archs4_file, gsm_names, species = 'Homo sapiens', re
   # use ARCHS4
   sample_locations <- which(samples %in% gsm_names)
   if (length(sample_locations) < length(gsm_names))
-    warning('Only', length(sample_locations), 'of', length(gsm_names), 'GSMs present.')
+    warning('Only ', length(sample_locations), ' of ', length(gsm_names), ' GSMs present.')
 
   # extract gene expression from compressed data
   counts <- t(rhdf5::h5read(archs4_file, "data/expression",
