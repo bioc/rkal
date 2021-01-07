@@ -2,7 +2,7 @@
 % Please edit documentation in R/build_kallisto_index.R
 \name{build_kallisto_index}
 \alias{build_kallisto_index}
-\title{Download ensembl transcriptome and build index for kalliso quantification}
+\title{Download ensembl transcriptome and build index for `kalliso` quantification}
 \usage{
 build_kallisto_index(indices_dir, species = "homo_sapiens", release = "94")
 }
@@ -14,6 +14,9 @@ kallisto indices.}
 
 \item{release}{ensembl release. Default is \code{94} (latest in release for
 AnnotationHub - needs to match with \code{\link{build_ensdb}}).}
+}
+\value{
+Called for side effects. Saves `kallisto` index.
 }
 \description{
 This index is used for RNA seq quantification.

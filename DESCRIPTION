@@ -1,16 +1,15 @@
 Package: rkal
 Type: Package
 Title: Run, Import, and Export 'kallisto' Quantifications
-Version: 0.1.13
+Version: 0.1.14
 Authors@R: person("Alex", "Pickering", email="alexvpickering@gmail.com", 
                   role=c("cre", "aut"), 
                   comment = c(ORCID = "0000-0002-0002-6759"))
-Maintainer: Alex Pickering <alexvpickering@gmail.com>
 Description: Interface to 'kallisto' pseudo quantification utility. 'rkal' 
-    automates running, importing, and exporting  'kallisto' quantification. This
-    includes importing samples from ARCHS4 HDF5 data objects. Though general, 'rkal'
-    is primarly intended for use by other packages e.g. crossmeta for differential
-    expression and meta analyses.
+    automates running, importing, and exporting  'kallisto' quantification. 
+    This includes importing samples from ARCHS4 HDF5 data objects. Though 
+    general, 'rkal' is primarly intended for use by other packages e.g. 
+    `crossmeta` for differential expression and meta analyses.
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1

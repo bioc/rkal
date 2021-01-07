@@ -2,7 +2,7 @@
 % Please edit documentation in R/load_seq.R
 \name{build_ensdb}
 \alias{build_ensdb}
-\title{Build ensembldb annotation package.}
+\title{Build and install ensembldb annotation package.}
 \usage{
 build_ensdb(species = "Homo sapiens", release = "94")
 }
@@ -13,8 +13,11 @@ be space separated, not underscore. Default is \code{Homo sapiens}.}
 \item{release}{EnsemblDB release. Should be same as used in
 \code{\link{build_kallisto_index}}.}
 }
+\value{
+Called for side effects.
+}
 \description{
-Build ensembldb annotation package.
+Build and install ensembldb annotation package.
 }
 \examples{
 

@@ -101,7 +101,8 @@ load_archs4_seq <- function(archs4_file, gsm_names, species = 'Homo sapiens',
   saved_eset <- !is.null(eset_path) && file.exists(eset_path)
   if (saved_eset & load_saved) return(readRDS(eset_path))
 
-  samples <- as.character(rhdf5::h5read(archs4_file, "meta/samples/geo_accession"))
+  samples <- as.character(rhdf5::h5read(archs4_file,
+                                        "meta/samples/geo_accession"))
   genes <- as.character(rhdf5::h5read(archs4_file, "meta/genes/genes"))
 
   # use ARCHS4
@@ -139,6 +140,20 @@ load_archs4_seq <- function(archs4_file, gsm_names, species = 'Homo sapiens',
 #'
 #' @return \code{DESeqTransform} with variance stabilized expression data.
 #' @export
+#' @examples
+#'
+#' # generate example
+#' y <- matrix(rnbinom(10000,mu=5,size=2),ncol=4)
+#' row.names(y) <- paste0('gene', 1:2500)
+#' quants <- edgeR::DGEList(counts=y)
+#'
+#' fdata <- data.table::data.table(gene_name = row.names(y), key = 'gene_name')
+#' annot <- get_ensdb_package('Homo sapiens', '94')
+#'
+#' eset <- construct_eset(quants, fdata, annot)
+#' eset$group <- factor(c('t', 't', 'c', 'c'))
+#' vsd <- get_vsd(eset)
+#'
 get_vsd <- function(eset, rlog_cutoff = 50) {
 
   trans_fun <- if(ncol(eset) > rlog_cutoff) DESeq2::vst else DESeq2::rlog
@@ -228,7 +243,8 @@ construct_eset <- function(quants, fdata, annot, txi.deseq = NULL) {
   e$exprs <- as.matrix(dt[, row.names(pdata), drop=FALSE])
 
   if (!is.null(txi.deseq)) {
-    e$abundance <- as.matrix(dt[, paste0(row.names(pdata), '_abundance'), drop=FALSE])
+    e$abundance <- as.matrix(
+      dt[, paste0(row.names(pdata), '_abundance'), drop=FALSE])
     e$counts <- as.matrix(dt[, paste0(row.names(pdata), '_counts'), drop=FALSE])
     e$length <- as.matrix(dt[, paste0(row.names(pdata), '_length'), drop=FALSE])
 
@@ -450,11 +466,11 @@ get_tx2gene <- function(species = 'Homo sapiens',
 }
 
 
-#' Build ensembldb annotation package.
+#' Build and install ensembldb annotation package.
 #'
 #' @inheritParams load_seq
 #'
-#' @return NULL
+#' @return Called for side effects.
 #' @export
 #'
 #' @examples

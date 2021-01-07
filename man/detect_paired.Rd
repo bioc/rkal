@@ -18,7 +18,8 @@ boolean indicating if experiement is pair-ended (\code{TRUE}) or
 Detect if experiment is pair-ended.
 }
 \examples{
-fastq_paths <- system.file("testdata", 'SRR12960930.400.fastq.gz', package="rkal")
+fastq_paths <- system.file("testdata", 'SRR12960930.400.fastq.gz',
+                           package="rkal")
 fastq_id1s <- get_fastq_id1s(fastq_paths)
 detect_paired(fastq_id1s)
 

@@ -51,10 +51,13 @@ select_pairs <- function(data_dir) {
       - select and add paired rows (usually contain _1 and _2 in filename)\n")
 
   message(
-  "For paired-end and single-ended experiments:
-      - confirm that file names (in column 'File Name') are assigned to the correct sample rows
-      - confirm that the experiment was correctly identified as single-ended or paired-end
-      - select samples to treat as a single library (if any - e.g. same sample sequenced in replicate)\n")
+  paste0("For paired-end and single-ended experiments:
+      - confirm that file names (in column 'File Name') ",
+        "are assigned to the correct sample rows
+      - confirm that the experiment was correctly ",
+        "identified as single-ended or paired-end
+      - select samples to treat as a single library ",
+        "(if any - e.g. same sample sequenced in replicate)\n"))
 
   message("Click 'Done' to continue with kallisto quantification.")
 
@@ -75,9 +78,11 @@ select_pairs <- function(data_dir) {
       # td for bg color group column
       shiny::tags$style("td.dt-nopad {padding: 0px !important; height: 100%;}"),
       # div inside td for bg color group column
-      shiny::tags$style("td.dt-nopad div {height: 100%; width: 100%; text-align: center;}"),
+      shiny::tags$style(
+        "td.dt-nopad div {height: 100%; width: 100%; text-align: center;}"),
       # span inside div inside td for bg color group column
-      shiny::tags$style("td.dt-nopad span {display: inline-block; padding: 8px 10px; color: white;}")
+      shiny::tags$style(paste0("td.dt-nopad span {display: inline-block; ",
+                               "padding: 8px 10px; color: white;}"))
     ),
     # title bar
     miniUI::gadgetTitleBar(shiny::textOutput('title', inline=TRUE),

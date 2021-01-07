@@ -8,7 +8,8 @@
 #' @export
 #'
 #' @examples
-#' fastq_paths <- system.file("testdata", 'SRR12960930.400.fastq.gz', package="rkal")
+#' fastq_paths <- system.file("testdata", 'SRR12960930.400.fastq.gz',
+#'                            package="rkal")
 #' fastq_id1s <- get_fastq_id1s(fastq_paths)
 #' detect_paired(fastq_id1s)
 #'
@@ -64,7 +65,8 @@ detect_paired <- function(fastq_id1s) {
 #' @export
 #'
 #' @examples
-#' fastq_paths <- system.file("testdata", 'SRR12960930.400.fastq.gz', package="rkal")
+#' fastq_paths <- system.file("testdata", 'SRR12960930.400.fastq.gz',
+#'                            package="rkal")
 #' fastq_id1s <- get_fastq_id1s(fastq_paths)
 #'
 get_fastq_id1s <- function(fastq_paths) {

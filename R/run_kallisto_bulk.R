@@ -24,7 +24,7 @@
 #' @param updateProgress Used by drugseqr app to provide visual update of
 #'   progress.
 #'
-#' @return NULL
+#' @return Called for side effects. Saves result of `kallisto` quantification.
 #' @export
 #'
 #'

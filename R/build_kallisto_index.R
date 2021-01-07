@@ -1,4 +1,4 @@
-#' Download ensembl transcriptome and build index for kalliso quantification
+#' Download ensembl transcriptome and build index for `kalliso` quantification
 #'
 #' This index is used for RNA seq quantification.
 #'
@@ -9,7 +9,7 @@
 #' @param release ensembl release. Default is \code{94} (latest in release for
 #'  AnnotationHub - needs to match with \code{\link{build_ensdb}}).
 #'
-#' @return NULL
+#' @return Called for side effects. Saves `kallisto` index.
 #' @export
 #'
 #' @examples

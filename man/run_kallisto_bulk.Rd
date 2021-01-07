@@ -49,6 +49,9 @@ single-end reads). Default (\code{NULL}) uses 200.}
 \item{updateProgress}{Used by drugseqr app to provide visual update of
 progress.}
 }
+\value{
+Called for side effects. Saves result of `kallisto` quantification.
+}
 \description{
 For pair-ended experiments, reads for each pair should be in a seperate file.
 }
