@@ -31,15 +31,17 @@ BiocManager::install("rkal")
 
 # Overview of rkal
 
-`kallisto` is the fastest program for accurately quantifying transcript abundance from
-bulk RNA-seq data. `rkal` provides an R interface to `kallisto` functions `index` (for building
+`kallisto` is the fastest program for accurately quantifying transcript 
+abundance from bulk RNA-seq data. `rkal` provides an R interface to `kallisto` 
+functions `index` (for building
 a genome index) and `quant` (for running pseudoalignment). `rkal` automates 
 argument specification for fastq files downloaded with [GEOfastq](https://github.com/alexvpickering/GEOfastq)
  and provides a convenient GUI for personal fastq files. After pseudoalignment,
 counts can be imported into R into a data structure that is compatible with
 [crossmeta](https://github.com/alexvpickering/crossmeta) (for differential
-expression and meta analyses) and [drugseqr](https://github.com/hms-dbmi/drugseqr) 
-(a GUI for bulk and single-cell exploratory analyses as well as connectivity mapping).
+expression and meta analyses) and 
+[drugseqr](https://github.com/hms-dbmi/drugseqr) (a GUI for bulk and single-cell
+exploratory analyses as well as connectivity mapping).
 Alternatively, counts can be imported for GEO samples pre-aligned as part of the
 [ARCHS4](https://maayanlab.cloud/archs4/download.html) project.
 
@@ -49,10 +51,11 @@ Prior to pseudoalignment, an index of the transcriptome must first be built:
 
 
 ```{r}
-# This will build the human Ensembl94 index for kallisto in the working directory
-# this only needs to be run once
+#This will build the human Ensembl94 index for kallisto in the working directory
+#this only needs to be run once
 indices_dir <- getwd()
-build_kallisto_index(indices_dir = indices_dir, species = 'homo_sapiens', release = '94')
+build_kallisto_index(indices_dir = indices_dir,
+                     species = 'homo_sapiens', release = '94')
 ```
 
 Next, we download an example fastq file with `GEOfastq`:
@@ -66,14 +69,14 @@ srp_meta <- crawl_gsms('GSM4875733')
 res <- get_fastqs(srp_meta, data_dir)
 ```
 
-Next we collect fastq file metadata needed to run pseudoalignement (are fastq files paired or
-single-end? Are there any samples split across multiple files?):
+Next we collect fastq file metadata needed to run pseudoalignement (are fastq 
+files paired or single-end? Are there any samples split across multiple files?):
 
 ```{r}
 # we can get the necessary info automatically for fastqs from GEOfastq
 quant_meta <- get_quant_meta(srp_meta, data_dir)
 
-# for personal fastq files, a GUI will pop up to specify this info in the next step
+# for personal fastq files, a GUI will request this info in the next step
 
 ```
 
