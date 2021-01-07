@@ -21,5 +21,4 @@ Setup feature annotation data
 }
 \examples{
 setup_fdata()
-
 }

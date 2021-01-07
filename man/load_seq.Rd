@@ -57,12 +57,14 @@ Load bulk RNA-Seq data into an ExpressionSet.
 \examples{
 
 library(tximportData)
-example <- system.file("extdata", 'kallisto_boot',
-                       'ERR188021', package="tximportData")
+example <- system.file("extdata", "kallisto_boot",
+    "ERR188021",
+    package = "tximportData"
+)
 
 # setup to mirror expected folder structure
 data_dir <- tempdir()
-qdir <- paste('kallisto', get_pkg_version(), 'quants', sep = '_')
+qdir <- paste("kallisto", get_pkg_version(), "quants", sep = "_")
 qdir <- file.path(data_dir, qdir)
 unlink(qdir, recursive = TRUE)
 dir.create(qdir)
@@ -70,7 +72,6 @@ file.copy(example, qdir, recursive = TRUE)
 
 # construct and annotate eset
 eset <- load_seq(data_dir)
-
 }
 \seealso{
 \link{get_vsd}

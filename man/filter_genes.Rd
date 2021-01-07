@@ -19,12 +19,11 @@ assay if 'counts' isn't available (for ARCHS4 data).
 }
 \examples{
 
-#example ExpressionSet
+# example ExpressionSet
 dds <- DESeq2::makeExampleDESeqDataSet()
 eset <- Biobase::ExpressionSet(DESeq2::counts(dds))
 eset$group <- dds$condition
 eset <- filter_genes(eset)
-
 }
 \seealso{
 \link[edgeR]{filterByExpr}

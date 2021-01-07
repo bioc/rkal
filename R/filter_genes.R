@@ -12,19 +12,18 @@
 #' @seealso \link[edgeR]{filterByExpr}
 #' @examples
 #'
-#' #example ExpressionSet
+#' # example ExpressionSet
 #' dds <- DESeq2::makeExampleDESeqDataSet()
 #' eset <- Biobase::ExpressionSet(DESeq2::counts(dds))
 #' eset$group <- dds$condition
 #' eset <- filter_genes(eset)
-#'
 filter_genes <- function(eset) {
-  els <- Biobase::assayDataElementNames(eset)
-  els <- ifelse('counts' %in% els, 'counts', 'exprs')
-  counts <- Biobase::assayDataElement(eset, els)
+    els <- Biobase::assayDataElementNames(eset)
+    els <- ifelse("counts" %in% els, "counts", "exprs")
+    counts <- Biobase::assayDataElement(eset, els)
 
-  keep <- edgeR::filterByExpr(counts, group = eset$group)
-  eset <- eset[keep, ]
-  if (!nrow(eset)) stop("No genes with reads after filtering")
-  return(eset)
+    keep <- edgeR::filterByExpr(counts, group = eset$group)
+    eset <- eset[keep, ]
+    if (!nrow(eset)) stop("No genes with reads after filtering")
+    return(eset)
 }

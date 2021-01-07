@@ -28,5 +28,4 @@ pairs <- rep(NA, 4)
 rows <- c(1, 2)
 reps <- rep(NA, 4)
 validate_reps(pairs, rows, reps)
-
 }

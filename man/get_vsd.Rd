@@ -23,15 +23,14 @@ Get variance stabilized data for exploratory data analysis
 \examples{
 
 # generate example
-y <- matrix(rnbinom(10000,mu=5,size=2),ncol=4)
-row.names(y) <- paste0('gene', 1:2500)
-quants <- edgeR::DGEList(counts=y)
+y <- matrix(rnbinom(10000, mu = 5, size = 2), ncol = 4)
+row.names(y) <- paste0("gene", 1:2500)
+quants <- edgeR::DGEList(counts = y)
 
-fdata <- data.table::data.table(gene_name = row.names(y), key = 'gene_name')
-annot <- drugseqr.data::get_ensdb_package('Homo sapiens', '94')
+fdata <- data.table::data.table(gene_name = row.names(y), key = "gene_name")
+annot <- drugseqr.data::get_ensdb_package("Homo sapiens", "94")
 
 eset <- construct_eset(quants, fdata, annot)
-eset$group <- factor(c('t', 't', 'c', 'c'))
+eset$group <- factor(c("t", "t", "c", "c"))
 vsd <- get_vsd(eset)
-
 }

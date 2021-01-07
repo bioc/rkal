@@ -24,6 +24,6 @@ This index is used for RNA seq quantification.
 \examples{
 # build kallisto index for humans
 indices_dir <- getwd()
-\dontrun{build_kallisto_index(indices_dir)}
+# build_kallisto_index(indices_dir)
 
 }

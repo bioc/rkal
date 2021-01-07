@@ -15,5 +15,4 @@ Get version of kallisto from system command.
 \examples{
 
 get_pkg_version()
-
 }

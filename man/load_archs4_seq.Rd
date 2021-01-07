@@ -36,8 +36,8 @@ ExpressionSet
 ARCHS4 h5 files are available at https://maayanlab.cloud/archs4/download.html
 }
 \examples{
-archs4_file <- '/path/to/human_matrix_v*.h5'
+archs4_file <- "/path/to/human_matrix_v*.h5"
 gsm_names <- c("GSM3190508", "GSM3190509", "GSM3190510", "GSM3190511")
-\dontrun{eset <- load_archs4_seq(archs4_file, gsm_names)}
+# eset <- load_archs4_seq(archs4_file, gsm_names)
 
 }

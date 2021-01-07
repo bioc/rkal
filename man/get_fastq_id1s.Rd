@@ -17,8 +17,8 @@ Named character vector of first sequence id lines (start with @) in
 Function is used to determine if an experiment is single or paired.
 }
 \examples{
-fastq_paths <- system.file("testdata", 'SRR12960930.400.fastq.gz',
-                           package="rkal")
+fastq_paths <- system.file("testdata", "SRR12960930.400.fastq.gz",
+    package = "rkal"
+)
 fastq_id1s <- get_fastq_id1s(fastq_paths)
-
 }
