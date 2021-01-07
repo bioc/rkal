@@ -2,3 +2,5 @@
 .RData
 .Rproj.user
 inst/doc
+data-raw/homologene/*.rds
+data-raw/tx2gene/*.rds

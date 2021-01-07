@@ -45,9 +45,11 @@ tx2gene <- group_by(tx2gene_unnest, tx_id) %>%
 
 # need tx_id, gene_name and entrezid for load_seq
 # need gene_id for annotation
-# need seq_name for mitochondrial genes
 # need description for app
+tx2gene$seq_name <- NULL
+tx2gene$description <- NULL
 saveRDS(tx2gene, 'data-raw/tx2gene/tx2gene_mouse.rds')
+
 
 # check concordance with l1000_es/cmap_es ----
 data_dir <- system.file('extdata', package = 'drugseqr.data')
