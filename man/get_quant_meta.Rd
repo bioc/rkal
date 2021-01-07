@@ -7,12 +7,14 @@
 get_quant_meta(srp_meta, data_dir)
 }
 \arguments{
-\item{srp_meta}{data.frame of GEO metadata from \code{\link[GEOfastq]{crawl_gsms}}}
+\item{srp_meta}{data.frame of GEO metadata from
+\code{\link[GEOfastq]{crawl_gsms}}}
 
 \item{data_dir}{Directory with raw fastq.gz RNA-Seq files.}
 }
 \value{
-data.frame needed for parameter \code{quant_meta} in \code{\link{run_kallisto_bulk}}
+data.frame needed for parameter \code{quant_meta} in
+  \code{\link{run_kallisto_bulk}}
 }
 \description{
 Transform GEO metadata for quantification

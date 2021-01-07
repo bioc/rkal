@@ -10,8 +10,9 @@ get_vsd(eset, rlog_cutoff = 50)
 \item{eset}{ExpressionSet loaded with \link{load_seq}.
 Requires group column in \code{pData(eset)} specifying sample groupings.}
 
-\item{rlog_cutoff}{Sample number above which will use \code{\link[DESeq2]{vst}}.
-instead of \code{\link[DESeq2]{rlog}}. Default is 50.}
+\item{rlog_cutoff}{Sample number above which will use
+\code{\link[DESeq2]{vst}} instead of \code{\link[DESeq2]{rlog}}.
+Default is 50.}
 }
 \value{
 \code{DESeqTransform} with variance stabilized expression data.

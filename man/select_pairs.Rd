@@ -10,10 +10,12 @@ select_pairs(data_dir)
 \item{data_dir}{Directory with raw fastq.gz RNA-Seq files.}
 }
 \value{
-data.frame with character column \code{'File Name'} and integer columns \code{'Pair'} (if pair-ended) and \code{'Replicate'} (if added).
+data.frame with character column \code{'File Name'} and integer
+  columns \code{'Pair'} (if pair-ended) and \code{'Replicate'} (if added).
 }
 \description{
-Used to select a pairs for paired-end experiments and replicate samples. Please follow prompt, ensuring correct file name matching and
-end-type experiment identification.
+Used to select a pairs for paired-end experiments and replicate samples.
+Please follow prompt, ensuring correct file name matching and end-type
+experiment identification.
 }
 \keyword{internal}

@@ -7,10 +7,12 @@
 detect_paired(fastq_id1s)
 }
 \arguments{
-\item{fastq_id1s}{Character vector of first sequence identifiers from fastq.gz files. Returned from \code{\link{get_fastq_id1s}}.}
+\item{fastq_id1s}{Character vector of first sequence identifiers from
+fastq.gz files. Returned from \code{\link{get_fastq_id1s}}.}
 }
 \value{
-boolean indicating if experiement is pair-ended (\code{TRUE}) or single-ended (\code{FALSE}).
+boolean indicating if experiement is pair-ended (\code{TRUE}) or
+  single-ended (\code{FALSE}).
 }
 \description{
 Detect if experiment is pair-ended.

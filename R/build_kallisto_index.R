@@ -2,10 +2,12 @@
 #'
 #' This index is used for RNA seq quantification.
 #'
-#' @param indices_dir Path to directory to create indices folder in for storing kallisto indices.
+#' @param indices_dir Path to directory to create indices folder in for storing
+#'  kallisto indices.
+#'
 #' @param species The species. Default is \code{homo_sapiens}.
-#' @param release ensembl release. Default is \code{94} (latest in release for AnnotationHub -
-#'   needs to match with \code{\link{build_ensdb}}).
+#' @param release ensembl release. Default is \code{94} (latest in release for
+#'  AnnotationHub - needs to match with \code{\link{build_ensdb}}).
 #'
 #' @return NULL
 #' @export
@@ -15,7 +17,8 @@
 #' indices_dir <- getwd()
 #' \dontrun{build_kallisto_index(indices_dir)}
 #'
-build_kallisto_index <- function(indices_dir, species = 'homo_sapiens', release = '94') {
+build_kallisto_index <- function(indices_dir,
+                                 species = 'homo_sapiens', release = '94') {
 
   kallisto_version <- get_pkg_version('kallisto')
   indices_dir <- file.path(indices_dir, paste0('kallisto_', kallisto_version))
@@ -26,7 +29,8 @@ build_kallisto_index <- function(indices_dir, species = 'homo_sapiens', release 
   # construct ensembl url for transcriptome
   ensembl_species <- gsub(' ', '_', tolower(species))
   ensembl_release <- paste0('release-', release)
-  ensembl_url <- paste0('ftp://ftp.ensembl.org/pub/', ensembl_release, '/fasta/', ensembl_species, '/cdna/')
+  ensembl_url <- paste0('ftp://ftp.ensembl.org/pub/',
+                        ensembl_release, '/fasta/', ensembl_species, '/cdna/')
 
   # get list of all files
   handle <- curl::new_handle(dirlistonly=TRUE)
@@ -43,12 +47,15 @@ build_kallisto_index <- function(indices_dir, species = 'homo_sapiens', release 
   curl::curl_download(ensembl_url, ensembl_fasta)
 
   # build index
-  index_fname <- gsub('fa.gz$', paste0(ensembl_release, '_k31.idx'), ensembl_fasta)
+  index_fname <- gsub('fa.gz$',
+                      paste0(ensembl_release, '_k31.idx'), ensembl_fasta)
   index_fname <- tolower(index_fname)
   tryCatch(system2('kallisto', args=c('index',
                                       '-i', index_fname,
                                       ensembl_fasta)),
-           error = function(err) {err$message <- 'Is kallisto installed and on the PATH?'; stop(err)})
+           error = function(err) {
+             err$message <- 'Is kallisto installed and on the PATH?'; stop(err)
+           })
 
   unlink(ensembl_fasta)
   setwd(work_dir)
@@ -65,8 +72,8 @@ build_kallisto_index <- function(indices_dir, species = 'homo_sapiens', release 
 #'
 get_pkg_version <- function() {
 
-    version <- system('kallisto version', intern = TRUE)
-    version <- gsub('^kallisto, version ', '', version)
+  version <- system('kallisto version', intern = TRUE)
+  version <- gsub('^kallisto, version ', '', version)
 
   return(version)
 }

@@ -3,31 +3,59 @@
 #' Load bulk RNA-Seq data into an ExpressionSet.
 #'
 #' @param data_dir Directory with raw and quantified RNA-Seq files.
-#' @param species Character vector indicating species. Genus and species should be space separated, not underscore. Default is \code{Homo sapiens}.
-#' @param release EnsemblDB release. Should be same as used in \code{\link{build_kallisto_index}}.
-#' @param load_saved If TRUE (default) and a saved \code{ExpressionSet} exists, will load from disk.
-#' @param save_eset If TRUE (default) and either \code{load_saved} is \code{FALSE} or a saved \code{ExpressionSet} does not exist,
-#'   then an ExpressionSet will be saved to disk. Will overwrite if already exists.
+#' @param species Character vector indicating species. Genus and species should
+#'   be space separated, not underscore. Default is \code{Homo sapiens}.
+#' @param release EnsemblDB release. Should be same as used in
+#'   \code{\link{build_kallisto_index}}.
+#' @param load_saved If TRUE (default) and a saved \code{ExpressionSet} exists,
+#'   will load from disk.
+#' @param save_eset If TRUE (default) and either \code{load_saved} is
+#'   \code{FALSE} or a saved \code{ExpressionSet} does not exist,
+#'   then an ExpressionSet will be saved to disk. Will overwrite if
+#'   already exists.
 #'
 #' @return \code{ExpressionSet} with attributes/accessors:
 #' \itemize{
-#'   \item \code{sampleNames} from names of raw RNA-Seq files (excluding .fastq.gz suffix).
+#'   \item \code{sampleNames} from names of raw RNA-Seq files (excluding
+#'     .fastq.gz suffix).
 #'   \item \code{annotation} Character vector of annotation package used.
-#'   \item \code{exprs} Length scaled counts generated from abundances for use in
-#'     \code{\link[limma]{voom}} (see \code{vignette("tximport", package = "tximport")}).
-#'   \item \code{abundance, counts, length} accessed e.g. by \code{assayDataElement(eset, 'length')}.
-#'   Imported for exploratory data analysis with DESeq2 variance stabilization transforms.
+#'   \item \code{exprs} Length scaled counts generated from abundances for use
+#'     in \code{\link[limma]{voom}} (see
+#'     \code{vignette("tximport", package = "tximport")}).
+#'   \item \code{abundance, counts, length} accessed e.g. by
+#'     \code{assayDataElement(eset, 'length')}.
+#'   Imported for exploratory data analysis with DESeq2 variance stabilization
+#'     transforms.
 #'   \item \code{phenoData} added columns:
 #'     \itemize{
-#'       \item \code{lib.size} library size from \code{\link[edgeR]{calcNormFactors}}.
-#'       \item \code{norm.factors} library normalization factors from \code{\link[edgeR]{calcNormFactors}}.
+#'       \item \code{lib.size} library size from
+#'         \code{\link[edgeR]{calcNormFactors}}.
+#'       \item \code{norm.factors} library normalization factors from
+#'         \code{\link[edgeR]{calcNormFactors}}.
 #'     }
 #' }
 #'
 #' @export
 #' @seealso \link{get_vsd}
+#' @examples
 #'
-load_seq <- function(data_dir, species = 'Homo sapiens', release = '94', load_saved = TRUE, save_eset = TRUE) {
+#' library(tximportData)
+#' example <- system.file("extdata", 'kallisto_boot',
+#'                        'ERR188021', package="tximportData")
+#'
+#' # setup to mirror expected folder structure
+#' data_dir <- tempdir()
+#' qdir <- paste('kallisto', get_pkg_version(), 'quants', sep = '_')
+#' qdir <- file.path(data_dir, qdir)
+#' unlink(qdir, recursive = TRUE)
+#' dir.create(qdir)
+#' file.copy(example, qdir, recursive = TRUE)
+#'
+#' # construct and annotate eset
+#' eset <- load_seq(data_dir)
+#'
+load_seq <- function(data_dir, species = 'Homo sapiens', release = '94',
+                     load_saved = TRUE, save_eset = TRUE) {
 
   # check if already have
   eset_path  <- file.path(data_dir, 'eset.rds')
@@ -54,7 +82,8 @@ load_seq <- function(data_dir, species = 'Homo sapiens', release = '94', load_sa
 #' @param archs4_file Path to human_matrix.h5 file.
 #' @param gsm_names Character vector of GSM names of samples to load.
 #' @param eset_path Path to load saved eset from or to save eset to.
-#' @param load_saved Should a previously saved eset be loaded? Requires \code{eset_path} to be specified.
+#' @param load_saved Should a previously saved eset be loaded? Requires
+#'   \code{eset_path} to be specified.
 #' @inheritParams load_seq
 #'
 #'
@@ -66,7 +95,8 @@ load_seq <- function(data_dir, species = 'Homo sapiens', release = '94', load_sa
 #' gsm_names <- c("GSM3190508", "GSM3190509", "GSM3190510", "GSM3190511")
 #' \dontrun{eset <- load_archs4_seq(archs4_file, gsm_names)}
 #'
-load_archs4_seq <- function(archs4_file, gsm_names, species = 'Homo sapiens', release = '94', load_saved = TRUE, eset_path = NULL) {
+load_archs4_seq <- function(archs4_file, gsm_names, species = 'Homo sapiens',
+                            release='94', load_saved=TRUE, eset_path=NULL) {
 
   saved_eset <- !is.null(eset_path) && file.exists(eset_path)
   if (saved_eset & load_saved) return(readRDS(eset_path))
@@ -77,7 +107,8 @@ load_archs4_seq <- function(archs4_file, gsm_names, species = 'Homo sapiens', re
   # use ARCHS4
   sample_locations <- which(samples %in% gsm_names)
   if (length(sample_locations) < length(gsm_names))
-    warning('Only ', length(sample_locations), ' of ', length(gsm_names), ' GSMs present.')
+    warning('Only ', length(sample_locations), ' of ', length(gsm_names),
+            ' GSMs present.')
 
   # extract gene expression from compressed data
   counts <- t(rhdf5::h5read(archs4_file, "data/expression",
@@ -102,8 +133,9 @@ load_archs4_seq <- function(archs4_file, gsm_names, species = 'Homo sapiens', re
 #'
 #' @param eset ExpressionSet loaded with \link{load_seq}.
 #'   Requires group column in \code{pData(eset)} specifying sample groupings.
-#' @param rlog_cutoff Sample number above which will use \code{\link[DESeq2]{vst}}.
-#'   instead of \code{\link[DESeq2]{rlog}}. Default is 50.
+#' @param rlog_cutoff Sample number above which will use
+#'   \code{\link[DESeq2]{vst}} instead of \code{\link[DESeq2]{rlog}}.
+#'   Default is 50.
 #'
 #' @return \code{DESeqTransform} with variance stabilized expression data.
 #' @export
@@ -124,7 +156,9 @@ get_vsd <- function(eset, rlog_cutoff = 50) {
 
   } else {
     # this is e.g. for eset from load_archs4_seq
-    dds <- DESeq2::DESeqDataSetFromMatrix(Biobase::exprs(eset), pdata, design = ~group)
+    dds <- DESeq2::DESeqDataSetFromMatrix(Biobase::exprs(eset),
+                                          pdata,
+                                          design = ~group)
   }
   dds <- DESeq2::estimateSizeFactors(dds)
   vsd <- trans_fun(dds, blind = FALSE)
@@ -147,18 +181,30 @@ get_vsd <- function(eset, rlog_cutoff = 50) {
 #'  assay, \code{quants$samples} stored in the sample metadata, and \code{fdata}
 #'  stored in the feature data.
 #' @export
+#' @examples
 #'
+#' # generate example
+#' y <- matrix(rnbinom(10000,mu=5,size=2),ncol=4)
+#' row.names(y) <- paste0('gene', 1:2500)
+#' quants <- edgeR::DGEList(counts=y)
+#'
+#' fdata <- data.table::data.table(gene_name = row.names(y), key = 'gene_name')
+#' annot <- get_ensdb_package('Homo sapiens', '94')
+#'
+#' eset <- construct_eset(quants, fdata, annot)
+
 construct_eset <- function(quants, fdata, annot, txi.deseq = NULL) {
   # remove duplicate rows of counts
   rn <- row.names(quants$counts)
 
-  txi.deseq <- txi.deseq[seq_len(3)]
+  txi.deseq <- txi.deseq[c('abundance', 'counts', 'length')]
   for (name in names(txi.deseq))
     colnames(txi.deseq[[name]]) <-
     paste(colnames(txi.deseq[[name]]), name, sep = '_')
 
   # workaround: R crashed from unique(mat) with GSE93624
-  counts <- data.frame(quants$counts, rn, stringsAsFactors = FALSE, check.names = FALSE)
+  counts <- data.frame(quants$counts, rn,
+                       stringsAsFactors = FALSE, check.names = FALSE)
 
   mat <- data.table::data.table(counts,
                                 txi.deseq$abundance,
@@ -168,7 +214,8 @@ construct_eset <- function(quants, fdata, annot, txi.deseq = NULL) {
   mat <- mat[!duplicated(counts), ]
 
   # merge exprs and fdata
-  dt <- merge(fdata, mat, by.y = 'rn', by.x = data.table::key(fdata), all.y = TRUE, sort = FALSE)
+  dt <- merge(fdata, mat, by.y = 'rn', by.x = data.table::key(fdata),
+              all.y = TRUE, sort = FALSE)
   dt <- as.data.frame(dt)
   row.names(dt) <- make.unique(dt[[1]])
 
@@ -191,31 +238,35 @@ construct_eset <- function(quants, fdata, annot, txi.deseq = NULL) {
   }
 
   # seperate fdata and exprs and transfer to eset
-  eset <- Biobase::ExpressionSet(e,
-                                 phenoData=Biobase::AnnotatedDataFrame(pdata),
-                                 featureData=Biobase::AnnotatedDataFrame(dt[, colnames(fdata), drop=FALSE]),
-                                 annotation=annot)
+  eset <- Biobase::ExpressionSet(
+    e,
+    phenoData=Biobase::AnnotatedDataFrame(pdata),
+    featureData=Biobase::AnnotatedDataFrame(dt[, colnames(fdata), drop=FALSE]),
+    annotation=annot)
 
   return(eset)
 }
 
 #' Setup feature annotation data
 #'
-#' @return \code{data.table} with columns \code{SYMBOL} and \code{ENTREZID_HS} corresponding to
-#'   HGNC symbols and human entrez ids respectively.
+#' @return \code{data.table} with columns \code{SYMBOL} and \code{ENTREZID_HS}
+#'   corresponding to HGNC symbols and human entrez ids respectively.
 #' @importFrom rlang :=
 #' @inheritParams build_kallisto_index
 #' @export
+#' @examples
+#' setup_fdata()
 #'
 setup_fdata <- function(species = 'Homo sapiens', release = '94') {
   # for R CMD check
-  entrezid <- tx_id <- SYMBOL_9606 <- SYMBOL <- ENTREZID <- gene_name <- .I <- NULL
+  entrezid<-tx_id<-SYMBOL_9606<-SYMBOL<-ENTREZID<-gene_name<-.I<- NULL
 
   is.hs <- grepl('sapiens', species)
   if (species == 'Mus musculus') tx2gene <- tx2gene_mouse
 
   if (!grepl('sapiens|musculus', species)) {
-    tx2gene <- get_tx2gene(species, release, columns = c("tx_id", "gene_name", "entrezid"))
+    tx2gene <- get_tx2gene(species, release,
+                           columns = c("tx_id", "gene_name", "entrezid"))
   }
 
   # unlist entrezids
@@ -224,7 +275,8 @@ setup_fdata <- function(species = 'Homo sapiens', release = '94') {
                  , by = c('tx_id', 'gene_name')]
 
   # add homologene
-  fdata <- merge(unique(fdata), homologene, by = 'ENTREZID', all.x = TRUE, sort = FALSE)
+  fdata <- merge(unique(fdata), homologene, by = 'ENTREZID',
+                 all.x = TRUE, sort = FALSE)
 
   # add HGNC
   exist_homologues <- sum(!is.na(fdata$ENTREZID_HS)) != 0
@@ -281,11 +333,25 @@ setup_fdata <- function(species = 'Homo sapiens', release = '94') {
 #' }
 #' @keywords internal
 #' @export
+#' @examples
+#' library(tximportData)
+#' example <- system.file("extdata", 'kallisto_boot',
+#'                        'ERR188021', package="tximportData")
+#'
+#' # setup to mirror expected folder structure
+#' data_dir <- tempdir()
+#' qdir <- paste('kallisto', get_pkg_version(), 'quants', sep = '_')
+#' qdir <- file.path(data_dir, qdir)
+#' unlink(qdir, recursive = TRUE)
+#' dir.create(qdir)
+#' file.copy(example, qdir, recursive = TRUE)
+#' quants <- import_quants(data_dir)
 #'
 import_quants <- function(data_dir, species = 'Homo sapiens', release = '94') {
 
   if (!grepl('sapiens', species)) {
-    tx2gene <- get_tx2gene(species, release, columns = c("tx_id", "gene_name", "entrezid"))
+    tx2gene <- get_tx2gene(species, release,
+                           columns = c("tx_id", "gene_name", "entrezid"))
   }
 
   # don't ignoreTxVersion if dots in tx2gene
@@ -303,15 +369,17 @@ import_quants <- function(data_dir, species = 'Homo sapiens', release = '94') {
   names(quants_paths) <- qdirs
 
   # import limma for differential expression analysis
-  txi.limma <- tximport::tximport(quants_paths, tx2gene = tx2gene, type = 'kallisto',
-                                  ignoreTxVersion = ignore, countsFromAbundance = 'lengthScaledTPM')
+  txi.limma <- tximport::tximport(
+    quants_paths, tx2gene = tx2gene, type = 'kallisto',
+    ignoreTxVersion = ignore, countsFromAbundance = 'lengthScaledTPM')
 
   quants <- edgeR::DGEList(txi.limma$counts)
   quants <- edgeR::calcNormFactors(quants)
 
   # import DESeq2 for exploratory analysis (plots)
-  txi.deseq <- tximport::tximport(quants_paths, tx2gene = tx2gene, type = 'kallisto',
-                                  ignoreTxVersion = ignore, countsFromAbundance = 'no')
+  txi.deseq <- tximport::tximport(
+    quants_paths, tx2gene = tx2gene, type = 'kallisto',
+    ignoreTxVersion = ignore, countsFromAbundance = 'no')
 
 
   return(list(quants = quants, txi.deseq = txi.deseq))
@@ -322,28 +390,39 @@ import_quants <- function(data_dir, species = 'Homo sapiens', release = '94') {
 #'
 #' @inheritParams load_seq
 #'
-#' @return Character vector with ensembldb package name. e.g. \code{'EnsDb.Hsapiens.v94'}.
+#' @return Character vector with ensembldb package name. e.g.
+#'   \code{'EnsDb.Hsapiens.v94'}.
 #' @export
+#' @examples
+#'
+#' get_ensdb_package(species = 'Homo sapiens', release = '94')
 #'
 get_ensdb_package <- function(species, release) {
   ensdb_species    <- strsplit(species, ' ')[[1]]
   ensdb_species[1] <- toupper(substr(ensdb_species[1], 1, 1))
 
-  ensdb_package <- paste('EnsDb', paste0(ensdb_species, collapse = ''), paste0('v', release), sep='.')
+  ensdb_package <- paste('EnsDb',
+                         paste0(ensdb_species, collapse = ''),
+                         paste0('v', release), sep='.')
   return(ensdb_package)
 }
 
 #' Get transcript to gene map.
 #'
 #' @inheritParams load_seq
-#' @param columns Character vector of columns from ensdb package to return or \code{'list'} to print available options.
+#' @param columns Character vector of columns from ensdb package to return or
+#'   \code{'list'} to print available options.
 #'
-#' @return \code{data.frame} with columns \code{tx_id}, \code{gene_name}, and \code{entrezid}
+#' @return \code{data.frame} with columns \code{tx_id}, \code{gene_name}, and
+#'   \code{entrezid}
 #' @export
 #'
 #' @keywords internal
 #'
-get_tx2gene <- function(species = 'Homo sapiens', release = '94', columns = c("tx_id", "gene_name", "entrezid", "gene_id", "seq_name", "description")) {
+get_tx2gene <- function(species = 'Homo sapiens',
+                        release = '94',
+                        columns = c("tx_id", "gene_name", "entrezid",
+                                    "gene_id", "seq_name", "description")) {
 
   # load EnsDb package
   ensdb_package <- get_ensdb_package(species, release)
@@ -359,7 +438,8 @@ get_tx2gene <- function(species = 'Homo sapiens', release = '94', columns = c("t
   }
 
   # map from transcripts to genes
-  tx2gene <- ensembldb::transcripts(get(ensdb_package), columns=columns, return.type='data.frame')
+  tx2gene <- ensembldb::transcripts(get(ensdb_package),
+                                    columns=columns, return.type='data.frame')
   tx2gene[tx2gene == ""] <- NA
   tx2gene <- tx2gene[!is.na(tx2gene$gene_name), ]
 
@@ -396,14 +476,16 @@ build_ensdb <- function(species = 'Homo sapiens', release = '94') {
   ah <- AnnotationHub::AnnotationHub()
   ahDb <- AnnotationHub::query(ah, pattern = c(species, "EnsDb", release))
 
-  if (!length(ahDb)) stop('Specified ensemble species/release not found in AnnotationHub.')
+  if (!length(ahDb))
+    stop('Specified ensemble species/release not found in AnnotationHub.')
 
   ahEdb <- ahDb[[1]]
 
-  ensembldb::makeEnsembldbPackage(AnnotationDbi::dbfile(ensembldb::dbconn(ahEdb)),
-                                  '0.0.1', 'Alex Pickering <alexvpickering@gmail.com>',
-                                  'Alex Pickering',
-                                  ensdb_dir)
+  ensembldb::makeEnsembldbPackage(
+    AnnotationDbi::dbfile(ensembldb::dbconn(ahEdb)),
+    '0.0.1', 'Alex Pickering <alexvpickering@gmail.com>',
+    'Alex Pickering',
+    ensdb_dir)
 
   # install new ensemble database
   ensdb_name <- list.files(ensdb_dir)

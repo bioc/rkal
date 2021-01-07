@@ -26,3 +26,15 @@ the returned \code{ExpressionSet}.}
 \description{
 Construct expression set
 }
+\examples{
+
+# generate example
+y <- matrix(rnbinom(10000,mu=5,size=2),ncol=4)
+row.names(y) <- paste0('gene', 1:2500)
+quants <- edgeR::DGEList(counts=y)
+
+fdata <- data.table::data.table(gene_name = row.names(y), key = 'gene_name')
+annot <- get_ensdb_package('Homo sapiens', '94')
+
+eset <- construct_eset(quants, fdata, annot)
+}

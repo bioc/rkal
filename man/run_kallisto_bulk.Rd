@@ -17,29 +17,37 @@ run_kallisto_bulk(
 )
 }
 \arguments{
-\item{indices_dir}{Directory with kallisto indices. See \code{\link{build_kallisto_index}}.}
+\item{indices_dir}{Directory with kallisto indices. See
+\code{\link{build_kallisto_index}}.}
 
 \item{data_dir}{Directory with raw fastq.gz RNA-Seq files.}
 
-\item{quant_meta}{Previous result of \code{\link{get_quant_meta}} (for fastqs downloaded by `GEOfastq`) or
-\code{\link{select_pairs}} (for non-public fastqs). Must contain column \code{'File Name'} and optionally
-\code{'Pair'} (rows with same value taken as paired), and \code{Replicate} (rows with same valued taken as replicates). \code{quant_meta} is used to bypass
-call to \code{select_pairs} GUI.}
+\item{quant_meta}{Previous result of \code{\link{get_quant_meta}}
+(for fastqs downloaded by `GEOfastq`) or \code{\link{select_pairs}}
+(for non-public fastqs). Must contain column \code{'File Name'} and
+optionally \code{'Pair'} (rows with same value taken as paired), and
+\code{Replicate} (rows with same valued taken as replicates).
+\code{quant_meta} is used to bypass call to \code{select_pairs} GUI.}
 
-\item{paired}{Boolean indicating if fastq files are paired. If \code{NULL} (default), fastqs are considered paired if they are non \code{NA}
+\item{paired}{Boolean indicating if fastq files are paired. If \code{NULL}
+(default), fastqs are considered paired if they are non \code{NA}
 entries in \code{quant_meta$Pair}.}
 
-\item{species}{Species name. Default is \code{homo_sapiens}.
-Used to determine transcriptome index to use.}
+\item{species}{Species name. Default is \code{homo_sapiens}. Used to
+determine transcriptome index to use.}
 
-\item{release}{Character vector of EnsDB release number. Release \code{'94'} is the default because HGNC symbols
-most closely overlap with those used to annotate CMAP02 and L1000.}
+\item{release}{Character vector of EnsDB release number. Release
+\code{'94'} is the default because HGNC symbols most closely overlap with
+those used to annotate CMAP02 and L1000.}
 
-\item{fl.mean}{Estimated average fragment length (only relevant for single-end reads). Default (\code{NULL}) uses 200.}
+\item{fl.mean}{Estimated average fragment length (only relevant for
+single-end reads). Default (\code{NULL}) uses 200.}
 
-\item{fl.sd}{Estimated standard deviation of fragment length (only relevant for single-end reads). Default (\code{NULL}) uses 20.}
+\item{fl.sd}{Estimated standard deviation of fragment length
+(only relevant for single-end reads). Default (\code{NULL}) uses 20.}
 
-\item{updateProgress}{Used by drugseqr app to provide visual update of progress.}
+\item{updateProgress}{Used by drugseqr app to provide visual update of
+progress.}
 }
 \description{
 For pair-ended experiments, reads for each pair should be in a seperate file.

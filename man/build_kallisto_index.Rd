@@ -7,12 +7,13 @@
 build_kallisto_index(indices_dir, species = "homo_sapiens", release = "94")
 }
 \arguments{
-\item{indices_dir}{Path to directory to create indices folder in for storing kallisto indices.}
+\item{indices_dir}{Path to directory to create indices folder in for storing
+kallisto indices.}
 
 \item{species}{The species. Default is \code{homo_sapiens}.}
 
-\item{release}{ensembl release. Default is \code{94} (latest in release for AnnotationHub -
-needs to match with \code{\link{build_ensdb}}).}
+\item{release}{ensembl release. Default is \code{94} (latest in release for
+AnnotationHub - needs to match with \code{\link{build_ensdb}}).}
 }
 \description{
 This index is used for RNA seq quantification.

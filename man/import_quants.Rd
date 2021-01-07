@@ -11,8 +11,8 @@ import_quants(data_dir, species = "Homo sapiens", release = "94")
 
 \item{species}{The species. Default is \code{homo_sapiens}.}
 
-\item{release}{ensembl release. Default is \code{94} (latest in release for AnnotationHub -
-needs to match with \code{\link{build_ensdb}}).}
+\item{release}{ensembl release. Default is \code{94} (latest in release for
+AnnotationHub - needs to match with \code{\link{build_ensdb}}).}
 }
 \value{
 list with items \itemize{
@@ -24,5 +24,20 @@ list with items \itemize{
 }
 \description{
 Import kallisto quants
+}
+\examples{
+library(tximportData)
+example <- system.file("extdata", 'kallisto_boot',
+                       'ERR188021', package="tximportData")
+
+# setup to mirror expected folder structure
+data_dir <- tempdir()
+qdir <- paste('kallisto', get_pkg_version(), 'quants', sep = '_')
+qdir <- file.path(data_dir, qdir)
+unlink(qdir, recursive = TRUE)
+dir.create(qdir)
+file.copy(example, qdir, recursive = TRUE)
+quants <- import_quants(data_dir)
+
 }
 \keyword{internal}

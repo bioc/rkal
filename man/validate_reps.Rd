@@ -7,13 +7,14 @@
 validate_reps(pairs, rows, reps)
 }
 \arguments{
-\item{pairs}{Numeric vector of integers and/or \code{NA}. Positions with the same integer
-value indicate samples that are paired in a pair-ended experiment.}
+\item{pairs}{Numeric vector of integers and/or \code{NA}. Positions with
+the same integer value indicate samples that are paired in a pair-ended
+experiment.}
 
 \item{rows}{Numeric vector of integers indicating selected rows.}
 
-\item{reps}{Numeric vector of integers and/or \code{NA}. Positions with the same integer
-value indicate samples that replicates.}
+\item{reps}{Numeric vector of integers and/or \code{NA}. Positions with the
+same integer value indicate samples that replicates.}
 }
 \value{
 \code{TRUE} if the replicate is valid, otherwise \code{FALSE}.

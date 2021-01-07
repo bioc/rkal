@@ -10,8 +10,8 @@ get_fastq_id1s(fastq_paths)
 \item{fastq_paths}{Character vector of paths to fastq.gz files}
 }
 \value{
-Named character vector of first sequence id lines (start with @) in \code{fastq_paths}.
-  Names are the \code{fastq_paths}.
+Named character vector of first sequence id lines (start with @) in
+  \code{fastq_paths}. Names are the \code{fastq_paths}.
 }
 \description{
 Function is used to determine if an experiment is single or paired.

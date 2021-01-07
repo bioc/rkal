@@ -15,33 +15,62 @@ load_seq(
 \arguments{
 \item{data_dir}{Directory with raw and quantified RNA-Seq files.}
 
-\item{species}{Character vector indicating species. Genus and species should be space separated, not underscore. Default is \code{Homo sapiens}.}
+\item{species}{Character vector indicating species. Genus and species should
+be space separated, not underscore. Default is \code{Homo sapiens}.}
 
-\item{release}{EnsemblDB release. Should be same as used in \code{\link{build_kallisto_index}}.}
+\item{release}{EnsemblDB release. Should be same as used in
+\code{\link{build_kallisto_index}}.}
 
-\item{load_saved}{If TRUE (default) and a saved \code{ExpressionSet} exists, will load from disk.}
+\item{load_saved}{If TRUE (default) and a saved \code{ExpressionSet} exists,
+will load from disk.}
 
-\item{save_eset}{If TRUE (default) and either \code{load_saved} is \code{FALSE} or a saved \code{ExpressionSet} does not exist,
-then an ExpressionSet will be saved to disk. Will overwrite if already exists.}
+\item{save_eset}{If TRUE (default) and either \code{load_saved} is
+\code{FALSE} or a saved \code{ExpressionSet} does not exist,
+then an ExpressionSet will be saved to disk. Will overwrite if
+already exists.}
 }
 \value{
 \code{ExpressionSet} with attributes/accessors:
 \itemize{
-  \item \code{sampleNames} from names of raw RNA-Seq files (excluding .fastq.gz suffix).
+  \item \code{sampleNames} from names of raw RNA-Seq files (excluding
+    .fastq.gz suffix).
   \item \code{annotation} Character vector of annotation package used.
-  \item \code{exprs} Length scaled counts generated from abundances for use in
-    \code{\link[limma]{voom}} (see \code{vignette("tximport", package = "tximport")}).
-  \item \code{abundance, counts, length} accessed e.g. by \code{assayDataElement(eset, 'length')}.
-  Imported for exploratory data analysis with DESeq2 variance stabilization transforms.
+  \item \code{exprs} Length scaled counts generated from abundances for use
+    in \code{\link[limma]{voom}} (see
+    \code{vignette("tximport", package = "tximport")}).
+  \item \code{abundance, counts, length} accessed e.g. by
+    \code{assayDataElement(eset, 'length')}.
+  Imported for exploratory data analysis with DESeq2 variance stabilization
+    transforms.
   \item \code{phenoData} added columns:
     \itemize{
-      \item \code{lib.size} library size from \code{\link[edgeR]{calcNormFactors}}.
-      \item \code{norm.factors} library normalization factors from \code{\link[edgeR]{calcNormFactors}}.
+      \item \code{lib.size} library size from
+        \code{\link[edgeR]{calcNormFactors}}.
+      \item \code{norm.factors} library normalization factors from
+        \code{\link[edgeR]{calcNormFactors}}.
     }
 }
 }
 \description{
 Load bulk RNA-Seq data into an ExpressionSet.
+}
+\examples{
+
+library(tximportData)
+example <- system.file("extdata", 'kallisto_boot',
+                       'ERR188021', package="tximportData")
+
+# setup to mirror expected folder structure
+data_dir <- tempdir()
+qdir <- paste('kallisto', get_pkg_version(), 'quants', sep = '_')
+qdir <- file.path(data_dir, qdir)
+unlink(qdir, recursive = TRUE)
+dir.create(qdir)
+file.copy(example, qdir, recursive = TRUE)
+
+# construct and annotate eset
+eset <- load_seq(data_dir)
+
 }
 \seealso{
 \link{get_vsd}

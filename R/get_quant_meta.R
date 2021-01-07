@@ -1,9 +1,11 @@
 #' Transform GEO metadata for quantification
 #'
-#' @param srp_meta data.frame of GEO metadata from \code{\link[GEOfastq]{crawl_gsms}}
+#' @param srp_meta data.frame of GEO metadata from
+#'   \code{\link[GEOfastq]{crawl_gsms}}
 #' @inheritParams run_kallisto_bulk
 #'
-#' @return data.frame needed for parameter \code{quant_meta} in \code{\link{run_kallisto_bulk}}
+#' @return data.frame needed for parameter \code{quant_meta} in
+#'   \code{\link{run_kallisto_bulk}}
 #' @export
 #' @examples
 #'
@@ -20,7 +22,9 @@
 get_quant_meta <- function(srp_meta, data_dir) {
 
 
-  fastq_files <- list.files(data_dir, paste0(srp_meta$run, '.+?.fastq.gz$', collapse = '|'))
+  fastq_files <- list.files(
+    data_dir, paste0(srp_meta$run, '.+?.fastq.gz$', collapse = '|'))
+
   srr_names <- gsub('.fastq.gz$', '', fastq_files)
   srr_names <- gsub('_[12]$', '', srr_names)
 

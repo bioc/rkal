@@ -4,11 +4,13 @@
 #' assay if 'counts' isn't available (for ARCHS4 data).
 #'
 #'
-#' @param eset ExpressionSet with 'counts' assayDataElement and group column in pData
+#' @param eset ExpressionSet with 'counts' assayDataElement and group column in
+#'  pData
 #'
 #' @return filtered \code{eset}
 #' @export
 #' @seealso \link[edgeR]{filterByExpr}
+#' @examples
 #'
 #' #example ExpressionSet
 #' dds <- DESeq2::makeExampleDESeqDataSet()

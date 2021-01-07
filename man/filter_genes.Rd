@@ -7,7 +7,8 @@
 filter_genes(eset)
 }
 \arguments{
-\item{eset}{ExpressionSet with 'counts' assayDataElement and group column in pData}
+\item{eset}{ExpressionSet with 'counts' assayDataElement and group column in
+pData}
 }
 \value{
 filtered \code{eset}
@@ -16,12 +17,15 @@ filtered \code{eset}
 Uses \link[edgeR]{filterByExpr} to filter based on 'counts' assay or 'exprs'
 assay if 'counts' isn't available (for ARCHS4 data).
 }
-\seealso{
-\link[edgeR]{filterByExpr}
+\examples{
 
 #example ExpressionSet
 dds <- DESeq2::makeExampleDESeqDataSet()
 eset <- Biobase::ExpressionSet(DESeq2::counts(dds))
 eset$group <- dds$condition
 eset <- filter_genes(eset)
+
+}
+\seealso{
+\link[edgeR]{filterByExpr}
 }

@@ -1,8 +1,10 @@
 #' Detect if experiment is pair-ended.
 #'
-#' @param fastq_id1s Character vector of first sequence identifiers from fastq.gz files. Returned from \code{\link{get_fastq_id1s}}.
+#' @param fastq_id1s Character vector of first sequence identifiers from
+#'   fastq.gz files. Returned from \code{\link{get_fastq_id1s}}.
 #'
-#' @return boolean indicating if experiement is pair-ended (\code{TRUE}) or single-ended (\code{FALSE}).
+#' @return boolean indicating if experiement is pair-ended (\code{TRUE}) or
+#'   single-ended (\code{FALSE}).
 #' @export
 #'
 #' @examples
@@ -23,12 +25,14 @@ detect_paired <- function(fastq_id1s) {
     pairs <- gsub('^.+?/([12])$', '\\1', fastq_id1s)
 
   } else if (newer) {
-    # pair is 1 or 2 followed by : followed by N or Y at beginning of second part
+    #pair is 1 or 2 followed by : followed by N or Y at beginning of second part
     id_parts2 <- sapply(id_parts, `[`, 2)
     pairs <- gsub('^([12]):[YN]:.+$', '\\1', id_parts2)
 
   } else {
-    stop("fastq.gz files don't appear to be from older/newer Illumina software. Please contact package author.")
+    stop(
+      "fastq.gz files don't appear to be from older/newer Illumina software.",
+      " Please contact package author.")
   }
 
   # SRA also accepts /1 and /2 at end of read name
@@ -55,8 +59,8 @@ detect_paired <- function(fastq_id1s) {
 #'
 #' @param fastq_paths Character vector of paths to fastq.gz files
 #'
-#' @return Named character vector of first sequence id lines (start with @) in \code{fastq_paths}.
-#'   Names are the \code{fastq_paths}.
+#' @return Named character vector of first sequence id lines (start with @) in
+#'   \code{fastq_paths}. Names are the \code{fastq_paths}.
 #' @export
 #'
 #' @examples
@@ -84,11 +88,12 @@ get_fastq_id1s <- function(fastq_paths) {
 #'
 #' Used internally by \link{select_pairs} and externally by drugseqr
 #'
-#' @param pairs Numeric vector of integers and/or \code{NA}. Positions with the same integer
-#'   value indicate samples that are paired in a pair-ended experiment.
+#' @param pairs Numeric vector of integers and/or \code{NA}. Positions with
+#'   the same integer value indicate samples that are paired in a pair-ended
+#'   experiment.
 #' @param rows Numeric vector of integers indicating selected rows.
-#' @param reps Numeric vector of integers and/or \code{NA}. Positions with the same integer
-#'   value indicate samples that replicates.
+#' @param reps Numeric vector of integers and/or \code{NA}. Positions with the
+#'   same integer value indicate samples that replicates.
 #'
 #' @return \code{TRUE} if the pairing is valid, otherwise \code{FALSE}.
 #' @export
@@ -115,10 +120,12 @@ validate_pairs <- function(pairs, rows, reps) {
     msg <- "All replicates must be included in the same pair."
 
   } else if (length(unique(rep_rows)) > 2) {
-    msg <- "A pair must include exactly two replicate groups or one replicate group and one additional sample."
+    msg <- paste0("A pair must include exactly two replicate groups or one ",
+                  "replicate group and one additional sample.")
 
   } else if (!all(is.na(pairs[rows]))) {
-    msg <- "Selected row(s) already belong to a pair. Click 'Reset' if you need to start over."
+    msg <- paste0("Selected row(s) already belong to a pair.",
+                  " Click 'Reset' if you need to start over.")
 
   } else {
     msg <- NULL
@@ -149,10 +156,13 @@ validate_reps <- function(pairs, rows, reps) {
     msg <- "Select at least two rows to mark as replicates."
 
   } else if (!all(is.na(reps[rows]))) {
-    msg <- "Selected row(s) already belong to a replicate. Click 'Reset' if you need to start over."
+    msg <- paste0("Selected row(s) already belong to a replicate.",
+                  " Click 'Reset' if you need to start over.")
 
   } else if (!all(is.na(pairs[rows]))) {
-    msg <- "Replicates must be specified first for paired samples that include replicates. Click 'Reset' if you need to start over."
+    msg <- paste0("Replicates must be specified first for paired samples ",
+                  "that include replicates. Click 'Reset' if you need to ",
+                  "start over.")
 
   } else {
     msg <- NULL
