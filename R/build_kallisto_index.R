@@ -7,7 +7,7 @@
 #'
 #' @param species The species. Default is \code{homo_sapiens}.
 #' @param release ensembl release. Default is \code{94} (latest in release for
-#'  AnnotationHub - needs to match with \code{\link{build_ensdb}}).
+#'  AnnotationHub - needs to match with \code{\link[drugseqr.data]{build_ensdb}}).
 #'
 #' @return Called for side effects. Saves `kallisto` index.
 #' @export

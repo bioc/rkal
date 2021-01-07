@@ -66,7 +66,7 @@ load_seq <- function(data_dir, species = 'Homo sapiens', release = '94',
   q <- import_quants(data_dir, species = species, release = release)
 
   # construct eset
-  annot <- get_ensdb_package(species, release)
+  annot <- drugseqr.data::get_ensdb_package(species, release)
   fdata <- setup_fdata(species, release)
   eset <- construct_eset(q$quants, fdata, annot, q$txi.deseq)
 
@@ -122,7 +122,7 @@ load_archs4_seq <- function(archs4_file, gsm_names, species = 'Homo sapiens',
 
   quants <- edgeR::calcNormFactors(edgeR::DGEList(counts))
   fdata <- setup_fdata(species, release)
-  annot <- get_ensdb_package(species, release)
+  annot <- drugseqr.data::get_ensdb_package(species, release)
   eset <- construct_eset(quants, fdata, annot)
 
   if (!is.null(eset_path)) saveRDS(eset, eset_path)
@@ -148,7 +148,7 @@ load_archs4_seq <- function(archs4_file, gsm_names, species = 'Homo sapiens',
 #' quants <- edgeR::DGEList(counts=y)
 #'
 #' fdata <- data.table::data.table(gene_name = row.names(y), key = 'gene_name')
-#' annot <- get_ensdb_package('Homo sapiens', '94')
+#' annot <- drugseqr.data::get_ensdb_package('Homo sapiens', '94')
 #'
 #' eset <- construct_eset(quants, fdata, annot)
 #' eset$group <- factor(c('t', 't', 'c', 'c'))
@@ -187,7 +187,8 @@ get_vsd <- function(eset, rlog_cutoff = 50) {
 #' @param quants \code{DGEList} with RNA-seq counts.
 #' @param fdata \code{data.table} returned from \code{\link{setup_fdata}}.
 #' @param annot Character vector with ensembldb package name. e.g.
-#'   \code{'EnsDb.Hsapiens.v94'}. Returned from \code{\link{get_ensdb_package}}.
+#'   \code{'EnsDb.Hsapiens.v94'}. Returned from
+#'   \code{\link[drugseqr.data]{get_ensdb_package}}.
 #' @param txi.deseq Optional \code{DGElist} returned by \code{import_quants}. If
 #'   specified, assays 'counts', 'abundance', and 'length' will be present in
 #'   the returned \code{ExpressionSet}.
@@ -204,7 +205,7 @@ get_vsd <- function(eset, rlog_cutoff = 50) {
 #' quants <- edgeR::DGEList(counts=y)
 #'
 #' fdata <- data.table::data.table(gene_name = row.names(y), key = 'gene_name')
-#' annot <- get_ensdb_package('Homo sapiens', '94')
+#' annot <- drugseqr.data::get_ensdb_package('Homo sapiens', '94')
 #'
 #' eset <- construct_eset(quants, fdata, annot)
 
@@ -278,12 +279,7 @@ setup_fdata <- function(species = 'Homo sapiens', release = '94') {
   entrezid<-tx_id<-SYMBOL_9606<-SYMBOL<-ENTREZID<-gene_name<-.I<- NULL
 
   is.hs <- grepl('sapiens', species)
-  if (species == 'Mus musculus') tx2gene <- tx2gene_mouse
-
-  if (!grepl('sapiens|musculus', species)) {
-    tx2gene <- get_tx2gene(species, release,
-                           columns = c("tx_id", "gene_name", "entrezid"))
-  }
+  tx2gene <- drugseqr.data::load_tx2gene(species, release)
 
   # unlist entrezids
   fdata <- data.table::data.table(tx2gene)
@@ -291,6 +287,10 @@ setup_fdata <- function(species = 'Homo sapiens', release = '94') {
                  , by = c('tx_id', 'gene_name')]
 
   # add homologene
+  homologene <- readRDS(system.file('extdata',
+                                    'homologene.rds',
+                                    package = 'drugseqr.data'))
+
   fdata <- merge(unique(fdata), homologene, by = 'ENTREZID',
                  all.x = TRUE, sort = FALSE)
 
@@ -301,6 +301,8 @@ setup_fdata <- function(species = 'Homo sapiens', release = '94') {
     fdata <- unique(fdata)
 
   } else {
+    hs <- readRDS(system.file('extdata', 'hs.rds', package = 'drugseqr.data'))
+
     # where no homology, use original entrez id (useful if human platform):
     if (is.hs) {
       filt <- is.na(fdata$ENTREZID_HS)
@@ -366,8 +368,8 @@ setup_fdata <- function(species = 'Homo sapiens', release = '94') {
 import_quants <- function(data_dir, species = 'Homo sapiens', release = '94') {
 
   if (!grepl('sapiens', species)) {
-    tx2gene <- get_tx2gene(species, release,
-                           columns = c("tx_id", "gene_name", "entrezid"))
+    tx2gene <- drugseqr.data::get_tx2gene(
+      species, release, columns = c("tx_id", "gene_name", "entrezid"))
   }
 
   # don't ignoreTxVersion if dots in tx2gene
@@ -402,112 +404,3 @@ import_quants <- function(data_dir, species = 'Homo sapiens', release = '94') {
 }
 
 
-#' Get ensembldb package name
-#'
-#' @inheritParams load_seq
-#'
-#' @return Character vector with ensembldb package name. e.g.
-#'   \code{'EnsDb.Hsapiens.v94'}.
-#' @export
-#' @examples
-#'
-#' get_ensdb_package(species = 'Homo sapiens', release = '94')
-#'
-get_ensdb_package <- function(species, release) {
-  ensdb_species    <- strsplit(species, ' ')[[1]]
-  ensdb_species[1] <- toupper(substr(ensdb_species[1], 1, 1))
-
-  ensdb_package <- paste('EnsDb',
-                         paste0(ensdb_species, collapse = ''),
-                         paste0('v', release), sep='.')
-  return(ensdb_package)
-}
-
-#' Get transcript to gene map.
-#'
-#' @inheritParams load_seq
-#' @param columns Character vector of columns from ensdb package to return or
-#'   \code{'list'} to print available options.
-#'
-#' @return \code{data.frame} with columns \code{tx_id}, \code{gene_name}, and
-#'   \code{entrezid}
-#' @export
-#'
-#' @keywords internal
-#'
-get_tx2gene <- function(species = 'Homo sapiens',
-                        release = '94',
-                        columns = c("tx_id", "gene_name", "entrezid",
-                                    "gene_id", "seq_name", "description")) {
-
-  # load EnsDb package
-  ensdb_package <- get_ensdb_package(species, release)
-  if (!require(ensdb_package, character.only = TRUE)) {
-    build_ensdb(species, release)
-    require(ensdb_package, character.only = TRUE)
-  }
-
-  # for printing available columns in EnsDb package
-  if (columns[1] == 'list') {
-    print(ensembldb::listColumns(get(ensdb_package)))
-    return(NULL)
-  }
-
-  # map from transcripts to genes
-  tx2gene <- ensembldb::transcripts(get(ensdb_package),
-                                    columns=columns, return.type='data.frame')
-  tx2gene[tx2gene == ""] <- NA
-  tx2gene <- tx2gene[!is.na(tx2gene$gene_name), ]
-
-  if ('description' %in% colnames(tx2gene))
-    tx2gene$description <- gsub(' \\[Source.+?\\]', '', tx2gene$description)
-
-  return(tx2gene)
-}
-
-
-#' Build and install ensembldb annotation package.
-#'
-#' @inheritParams load_seq
-#'
-#' @return Called for side effects.
-#' @export
-#'
-#' @examples
-#'
-#' # build ensembldb annotation package for human
-#' \dontrun{build_ensdb()}
-#'
-build_ensdb <- function(species = 'Homo sapiens', release = '94') {
-
-  # store ensembl databases in built package
-  ensdb_dir <- 'EnsDb'
-  unlink('EnsDb', recursive = TRUE)
-  dir.create(ensdb_dir)
-
-  # format is genus_species in multiple other functions but not here
-  species <- gsub('_', ' ', species)
-
-  # generate new ensembl database from specified release
-  ah <- AnnotationHub::AnnotationHub()
-  ahDb <- AnnotationHub::query(ah, pattern = c(species, "EnsDb", release))
-
-  if (!length(ahDb))
-    stop('Specified ensemble species/release not found in AnnotationHub.')
-
-  ahEdb <- ahDb[[1]]
-
-  ensembldb::makeEnsembldbPackage(
-    AnnotationDbi::dbfile(ensembldb::dbconn(ahEdb)),
-    '0.0.1', 'Alex Pickering <alexvpickering@gmail.com>',
-    'Alex Pickering',
-    ensdb_dir)
-
-  # install new ensemble database
-  ensdb_name <- list.files(ensdb_dir)
-  ensdb_path <- file.path(ensdb_dir, ensdb_name)
-  utils::install.packages(ensdb_path, repos = NULL)
-
-  # remove source files
-  unlink(ensdb_dir, recursive = TRUE)
-}
