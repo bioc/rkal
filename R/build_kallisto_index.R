@@ -20,7 +20,7 @@
 build_kallisto_index <- function(indices_dir,
                                  species = 'homo_sapiens', release = '94') {
 
-  kallisto_version <- get_pkg_version('kallisto')
+  kallisto_version <- get_pkg_version()
   indices_dir <- file.path(indices_dir, paste0('kallisto_', kallisto_version))
 
   if (!dir.exists(indices_dir))
