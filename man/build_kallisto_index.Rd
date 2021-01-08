@@ -13,7 +13,8 @@ kallisto indices.}
 \item{species}{The species. Default is \code{homo_sapiens}.}
 
 \item{release}{ensembl release. Default is \code{94} (latest in release for
-AnnotationHub - needs to match with \code{\link[drugseqr.data]{build_ensdb}}).}
+AnnotationHub - needs to match with
+\code{\link[drugseqr.data]{build_ensdb}}).}
 }
 \value{
 Called for side effects. Saves `kallisto` index.
@@ -25,5 +26,4 @@ This index is used for RNA seq quantification.
 # build kallisto index for humans
 indices_dir <- getwd()
 # build_kallisto_index(indices_dir)
-
 }

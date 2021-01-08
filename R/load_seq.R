@@ -396,12 +396,7 @@ setup_fdata <- function(species = "Homo sapiens", release = "94") {
 #' file.copy(example, qdir, recursive = TRUE)
 #' quants <- import_quants(data_dir)
 import_quants <- function(data_dir, species = "Homo sapiens", release = "94") {
-    if (!grepl("sapiens", species)) {
-        tx2gene <- drugseqr.data::get_tx2gene(
-            species, release,
-            columns = c("tx_id", "gene_name", "entrezid")
-        )
-    }
+    tx2gene <- drugseqr.data::load_tx2gene(species, release)
 
     # don't ignoreTxVersion if dots in tx2gene
     ignore <- TRUE

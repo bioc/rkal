@@ -10,7 +10,8 @@ setup_fdata(species = "Homo sapiens", release = "94")
 \item{species}{The species. Default is \code{homo_sapiens}.}
 
 \item{release}{ensembl release. Default is \code{94} (latest in release for
-AnnotationHub - needs to match with \code{\link[drugseqr.data]{build_ensdb}}).}
+AnnotationHub - needs to match with
+\code{\link[drugseqr.data]{build_ensdb}}).}
 }
 \value{
 \code{data.table} with columns \code{SYMBOL} and \code{ENTREZID_HS}

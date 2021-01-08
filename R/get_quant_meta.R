@@ -22,7 +22,7 @@
 #' quant_meta <- get_quant_meta(srp_meta, data_dir)
 get_quant_meta <- function(srp_meta, data_dir) {
     fastq_files <- list.files(
-        data_dir, paste0(srp_meta$run, ".+?.fastq.gz$", collapse = "|")
+        data_dir, paste0(srp_meta$run, "(_[12])?.fastq.gz$", collapse = "|")
     )
 
     srr_names <- gsub(".fastq.gz$", "", fastq_files)
