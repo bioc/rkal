@@ -1,7 +1,7 @@
 Package: rkal
 Type: Package
 Title: Run, Import, and Export 'kallisto' Quantifications
-Version: 0.1.15
+Version: 0.99.0
 Authors@R: person("Alex", "Pickering", email="alexvpickering@gmail.com",
                 role=c("cre", "aut"),
                 comment = c(ORCID = "0000-0002-0002-6759"))
@@ -46,3 +46,4 @@ Suggests:
     tximportData,
     GEOfastq
 VignetteBuilder: knitr
+BugReports: https://github.com/alexvpickering/rkal/issues
