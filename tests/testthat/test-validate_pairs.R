@@ -1,42 +1,61 @@
-test_that("get_fastq_id1s works", {
-    fastq_paths <- system.file("testdata", "SRR12960930.400.fastq.gz", package = "rkal")
-    fastq_id1s <- get_fastq_id1s(fastq_paths)
+context("select pairs validation")
 
-    expect_equal(unname(fastq_id1s), "@SRR12960930.1 1/1")
-})
+test_that("validate_pairs requires two rows to be paired", {
 
-
-test_that("detect_paired works for single-end fastq.gz file", {
-    fastq_paths <- system.file("testdata", "SRR12960930.400.fastq.gz", package = "rkal")
-    fastq_id1s <- get_fastq_id1s(fastq_paths)
-
-
-    expect_false(detect_paired(fastq_id1s))
-})
-
-test_that("detect_paired works for paired-end fastq.gz file", {
-    fastq_dir <- system.file("testdata", package = "rkal")
-    fastq_paths <- list.files(fastq_dir, "^SRR13202502.400_", full.names = TRUE)
-    fastq_id1s <- get_fastq_id1s(fastq_paths)
-
-
-    expect_true(detect_paired(fastq_id1s))
-})
-
-
-test_that("validate_pairs requires at least two samples to be paired", {
+    # single row fails
+    rows <- 1
     pairs <- rep(NA, 4)
-    rows <- c(1)
     reps <- rep(NA, 4)
-    msg <- validate_pairs(pairs, rows, reps)
-    expect_true(grepl("at least two", msg))
+    expect_match(validate_pairs(pairs, rows, reps), 'at least two rows')
+
+    # using two rows works
+    rows2 <- c(1, 2)
+    expect_null(validate_pairs(pairs, rows2, reps))
 })
 
-
-test_that("validate_reps requires at least two samples to be replicates", {
+test_that("validate_pairs requires two non-replicate rows to be paired", {
+    rows <- c(1, 2)
     pairs <- rep(NA, 4)
-    rows <- c(1)
-    reps <- rep(NA, 4)
-    msg <- validate_reps(pairs, rows, reps)
-    expect_true(grepl("at least two", msg))
+    reps <- c(1, 1, 2, 2)
+
+    expect_match(validate_pairs(pairs, rows, reps), 'at least two non-replicate rows')
+
+    rows2 <- c(1, 2, 3, 4)
+    expect_null(validate_pairs(pairs, rows2, reps))
 })
+
+test_that("validate_pairs doesn't allow a replicate not included in a pair", {
+    rows <- c(1, 3)
+    pairs <- rep(NA, 4)
+    reps <- c(1, 1, 2, 2)
+
+    expect_match(validate_pairs(pairs, rows, reps), 'All replicates must be included in the same pair')
+
+    rows2 <- c(1, 2, 3, 4)
+    expect_null(validate_pairs(pairs, rows2, reps))
+})
+
+test_that("validate_pairs requires exactly two unique replicates, or one replicate and 1 additional sample", {
+    rows <- c(1, 2, 3, 4, 5)
+    pairs <- rep(NA, 6)
+    reps <- c(1, 1, 2, 2, NA, NA)
+
+    expect_match(validate_pairs(pairs, rows, reps), 'exactly two replicate groups')
+
+    rows2 <- c(1, 2, 3, 4)
+    expect_null(validate_pairs(pairs, rows2, reps))
+})
+
+test_that("validate_pairs doesn't allow overwriting of existing pairs", {
+    rows <- c(1, 2, 3, 4)
+    reps <- rep(NA, 6)
+    pairs <- c(1, 1, NA, NA, 2, 2)
+
+    expect_match(validate_pairs(pairs, rows, reps), 'already belong to a pair')
+
+    rows2 <- c(3, 4)
+    expect_null(validate_pairs(pairs, rows2, reps))
+})
+
+
+

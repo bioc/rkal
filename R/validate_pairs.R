@@ -19,8 +19,8 @@ detect_paired <- function(fastq_id1s) {
     # newer illumina sequence identifiers have 2 space-seperated parts
     id_parts <- strsplit(fastq_id1s, " ")
     FUN.VALUE <- seq_along(id_parts)
-    older <- all(vapply(id_parts, length, 1) == 1)
-    newer <- all(vapply(id_parts, length, 1) == 2)
+    older <- all(sapply(id_parts, length) == 1)
+    newer <- all(sapply(id_parts, length) == 2)
 
     if (older) {
         # pair is 1 or 2 at end of sequence id after /
@@ -33,7 +33,7 @@ detect_paired <- function(fastq_id1s) {
     } else {
         stop(
             "fastq.gz files don't appear to be from older/newer Illumina",
-            "software. Please contact package author."
+            " software. Please contact package author."
         )
     }
 

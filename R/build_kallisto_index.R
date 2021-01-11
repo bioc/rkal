@@ -5,7 +5,7 @@
 #' @param indices_dir Path to directory to create indices folder in for storing
 #'  kallisto indices.
 #'
-#' @param species The species. Default is \code{homo_sapiens}.
+#' @param species The species. Default is \code{'homo_sapiens'}.
 #' @param release ensembl release. Default is \code{94} (latest in release for
 #'  AnnotationHub - needs to match with
 #'  \code{\link[drugseqr.data]{build_ensdb}}).
