@@ -21,4 +21,10 @@ Path to kallisto index
 \description{
 Get path to kallisto index
 }
-\keyword{internal}
+\examples{
+# replace with indices_dir used in build_kallisto_index
+indices_dir <- tempdir()
+
+get_kallisto_index(indices_dir)
+
+}

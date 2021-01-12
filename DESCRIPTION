@@ -38,7 +38,7 @@ biocViews:
     Preprocessing,
     Transcriptomics
 Depends: 
-    R (>= 4.1)
+    R (>= 4.0)
 Suggests: 
     knitr,
     rmarkdown,

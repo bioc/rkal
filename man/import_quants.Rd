@@ -9,7 +9,7 @@ import_quants(data_dir, species = "Homo sapiens", release = "94")
 \arguments{
 \item{data_dir}{Directory with raw and quantified RNA-Seq files.}
 
-\item{species}{The species. Default is \code{homo_sapiens}.}
+\item{species}{The species. Default is \code{'homo_sapiens'}.}
 
 \item{release}{ensembl release. Default is \code{94} (latest in release for
 AnnotationHub - needs to match with

@@ -151,7 +151,13 @@ run_kallisto_bulk <- function(indices_dir, data_dir, quant_meta = NULL,
 #'   those used to annotate CMAP02 and L1000.
 #'
 #' @return Path to kallisto index
-#' @keywords internal
+#' @export
+#'
+#' @examples
+#' # replace with indices_dir used in build_kallisto_index
+#' indices_dir <- tempdir()
+#'
+#' get_kallisto_index(indices_dir)
 #'
 get_kallisto_index <- function(indices_dir,
     species = "homo_sapiens", release = "94") {
